@@ -1,0 +1,12 @@
+{% extends 'clients/base.html' %}
+{% block content %}
+<h3 class="demo-panel-title">Escoge una opción</h3>
+<div class="row demo-row">
+    <div class="col-xs-3">
+      <a href='{% url 'login' %}' class="btn btn-block btn-lg btn-primary">Ya tengo cuenta</a>
+    </div>
+    <div class="col-xs-3">
+      <a href="#fakelink" class="btn btn-block btn-lg btn-inverse">No me he registrado</a>
+    </div>
+</div>
+{% endblock %}
