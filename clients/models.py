@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Client(models.Model):
@@ -17,25 +16,24 @@ class Client(models.Model):
         return self.name
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    document_type = models.CharField(max_length=50, default="CC")
-    document_number = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
-    phone = models.IntegerField(null=True)
-    address = models.CharField(max_length=100)
+    ID_CHOICES = (('Cédula','CC'), ('Pasaporte','PA'), ('Cedula_extranjería','CE'))
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    birth_date = models.DateField(null=True, blank=True)
+    document_type = models.CharField(max_length=50, choices=ID_CHOICES, null=False, default="CC")
+    # document_number = models.CharField(max_length=50)
+    # city = models.CharField(max_length=50)
+    # phone = models.IntegerField(null=True)
+    # address = models.CharField(max_length=100)
     company = models.ForeignKey(
         'clients.Client',
         on_delete=models.SET_NULL,
         null=True,
         related_name = 'users'
     )
-    job_title = models.CharField(max_length=200)
-
+    # job_title = models.CharField(max_length=200)
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+        instance.profile.save()

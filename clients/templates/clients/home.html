@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<head>
-<style>
-body  {
-    background-image: url(https://static.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg);
-}
-</style>
-</head>
+{% extends 'clients/base.html' %}
 {% block content%}
 <body>
-:S
+Hola {{user.get_full_name}}
+<ul>
+  <li>Username: {{ user.username }}</li>
+  <li>Location: {{ user.profile.address }}</li>
+  <li>Birth Date: {{ user.profile.birth_date }}</li>
+</ul>
+Actualmente el sitio está en construcción🚀
 </body>
 {% endblock %}

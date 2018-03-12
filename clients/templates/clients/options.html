@@ -5,8 +5,9 @@
     <div class="col-xs-3">
       <a href='{% url 'login' %}' class="btn btn-block btn-lg btn-primary">Ya tengo cuenta</a>
     </div>
+    <br>
     <div class="col-xs-3">
-      <a href="#fakelink" class="btn btn-block btn-lg btn-inverse">No me he registrado</a>
+      <a href='{% url 'register_user' %}' class="btn btn-block btn-lg btn-inverse">No me he registrado</a>
     </div>
 </div>
 {% endblock %}
