@@ -54,7 +54,7 @@ def register_user(request):
             user.city= form.cleaned_data.get('city')
             user.phone= form.cleaned_data.get('phone')
             user.address = form.cleaned_data.get('address')
-            # user.company= form.cleaned_data.get('company')
+            user.company= form.cleaned_data.get('company')
             user.job_title = form.cleaned_data.get('job_title')
             user.save()
             raw_password = form.cleaned_data.get('password1')

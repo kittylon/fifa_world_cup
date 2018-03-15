@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url('admin/', admin.site.urls),
     url('', include('clients.urls')),
+    url('', include('world_cup.urls')),
 ]

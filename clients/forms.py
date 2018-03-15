@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from clients.models import Client
 from django.contrib.auth.forms import UserCreationForm
 
-ID_CHOICES = (('Cédula','CC'), ('Pasaporte','PA'), ('Cedula_extranjería','CE'))
+ID_CHOICES = (('CC','Cédula'), ('PA','Pasaporte'), ('CE','Cédula de extranjería'))
 
 class SignUpForm(UserCreationForm):
     birth_date = forms.DateField(help_text='Required. Format: YYYY-MM-DD')
@@ -12,7 +12,7 @@ class SignUpForm(UserCreationForm):
     city = forms.CharField(label='Ciudad')
     phone = forms.IntegerField(label='Teléfono')
     address = forms.CharField(label='Dirección')
-    # company = forms.ModelChoiceField(queryset=Client.objects.all())
+    company = forms.ModelChoiceField(queryset=Client.objects.all())
     job_title = forms.CharField(label='Cargo en su empresa')
 
 
@@ -20,17 +20,5 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('birth_date', 'document_type',
                 'document_number', 'city', 'phone',
-                'address', 'job_title',
+                'address', 'company','job_title',
                 'username','password1','password2')
-
-# class UserForm(forms.ModelForm):
-#     class Meta:
-#         model = User
-#         fields = ('first_name', 'last_name', 'email')
-#
-# class ProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = Profile
-#         fields = ('birth_date', 'document_type',
-#                 'document_number', 'city', 'phone',
-#                 'address', 'company', 'job_title')
