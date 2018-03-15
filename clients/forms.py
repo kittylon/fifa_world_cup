@@ -12,7 +12,7 @@ class SignUpForm(UserCreationForm):
     city = forms.CharField(label='Ciudad')
     phone = forms.IntegerField(label='Teléfono')
     address = forms.CharField(label='Dirección')
-    company = forms.ModelChoiceField(queryset=Client.objects.all())
+    company = forms.ModelChoiceField(label='Empresa', queryset=Client.objects.all())
     job_title = forms.CharField(label='Cargo en su empresa')
 
 
