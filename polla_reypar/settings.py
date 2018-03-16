@@ -65,6 +65,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'world_cup.context_processor.Teams_data',
+                'world_cup.context_processor.Matches_data',
             ],
         },
     },
@@ -102,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'groups_phase'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

@@ -10,6 +10,7 @@ RegisterView, home, OptionsView, register_user
 urlpatterns = [
     path("", OptionsView.as_view(), name='options'),
     path('login/', auth_views.login, name='login'),
+    path('logout/', auth_views.logout, {'next_page': 'options'}, name='logout'),
     path('home/', home, name='home'),
-    path('register/', register_user, name='register_user')
+    path('register/', register_user, name='register_user'),
 ]

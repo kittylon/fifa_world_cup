@@ -6,8 +6,6 @@ from clients.models import Client, Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
-# from django.db import transaction
-# from django.utils.translation import gettext as _
 
 # Views to register a new user
 class RegisterView(TemplateView):
@@ -20,34 +18,15 @@ class OptionsView(TemplateView):
 def home(request):
     return render(request, 'clients/home.html')
 
-# Home view for registered users
-# @transaction.atomic
-# def register_user(request):
-#     if request.method == 'POST':
-#         user_form = UserForm(request.POST)
-#         profile_form = ProfileForm(request.POST)
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             messages.success(request, _('Your profile was successfully updated!'))
-#             # return redirect('home')
-#         else:
-#             messages.error(request, _('Please correct the error below.'))
-#     else:
-#         user_form = UserForm()
-#         profile_form = ProfileForm()
-#     return render(request, 'registration/register_user.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form
-#     })
-
-
 def register_user(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()  # load the profile instance created by the signal
+            user.first_name = form.cleaned_data.get('name')
+            user.last_name = form.cleaned_data.get('last_name')
+            user.email = form.cleaned_data.get('email')
             user.profile.birth_date = form.cleaned_data.get('birth_date')
             user.profile.document_type = form.cleaned_data.get('document_type')
             user.profile.document_number = form.cleaned_data.get('document_number')
@@ -60,7 +39,7 @@ def register_user(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect('home')
+            return redirect('groups_phase')
     else:
         form = SignUpForm()
     return render(request, 'registration/register_user.html', {'form': form})

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Team(models.Model):
@@ -16,9 +17,26 @@ class Match(models.Model):
     PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Cuartos','Cuartos'),
                     ('Semi','Semifinal'),('3_y_4','Puesto 3 y 4'), ('Finals','Final'))
 
-    match = models.DateField(null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
     phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)
-    team_one = models.CharField(max_length=255)
-    team_two = models.CharField(max_length=255)
-    goals_one = models.PositiveIntegerField()
-    goals_two = models.PositiveIntegerField()
+    team_one = models.ForeignKey(
+                'world_cup.Team',
+                on_delete=models.SET_NULL,
+                null=True,
+                related_name='team_one')
+
+    team_two = models.ForeignKey(
+                'world_cup.Team',
+                on_delete=models.SET_NULL,
+                null=True,
+                related_name='team_two')
+
+class UserGuess(models.Model):
+    match = models.ForeignKey(
+                'world_cup.Match',
+                on_delete=models.SET_NULL,
+                null=True,
+                related_name='match')
+    team_one_score = models.PositiveIntegerField()
+    team_two_score = models.PositiveIntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='gambler')
