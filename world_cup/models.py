@@ -32,11 +32,7 @@ class Match(models.Model):
                 related_name='team_two')
 
 class UserGuess(models.Model):
-    match = models.ForeignKey(
-                'world_cup.Match',
-                on_delete=models.SET_NULL,
-                null=True,
-                related_name='match')
+    match = models.ForeignKey('world_cup.Match',on_delete=models.CASCADE,related_name='match_guessed')
     team_one_score = models.PositiveIntegerField()
     team_two_score = models.PositiveIntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='gambler')
