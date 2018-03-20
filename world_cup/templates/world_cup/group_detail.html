@@ -3,7 +3,6 @@
 W
 {% for team in object_list %}
   {{team.country}}
-
 {% endfor %}
 <form class="" action="/groups_phase/" method="post">
   {% csrf_token %}
@@ -13,7 +12,6 @@ W
     <th colspan="4">Partido</th>
   </tr>
   {% for match in matches %}
-  {% if match.team_one.group == 'A' and match.team_two.group == 'A' %}
   <tr>
     <td>{{match.date}}</td>
     <td>{{match.team_one}}</td>
@@ -21,7 +19,6 @@ W
     <td><input type="number" name="{{match.pk}}_two" value='0'>
     <td>{{match.team_two}}</td>
   </tr>
-  {% endif %}
   {% endfor %}
 </table>
 <input type="submit" name="" value="Registrar">

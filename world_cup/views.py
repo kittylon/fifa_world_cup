@@ -15,14 +15,11 @@ class GroupDetailView(TemplateView):
     def get(self, request, *args, **kwargs):
         query = self.kwargs['query']
         object_list =  Team.objects.filter(group=query)
-        return render(request, self.template_name, {'object_list': object_list} )
-    #
-    # def get_queryset(self):
-    #     print('Hola, soy json')
-    #     query = self.kwargs['query']
-    #     print(query)
-    #     print(Team.objects.filter(group=query))
-    #     return Team.objects.filter(group=query)
+        matches = []
+        for team in object_list:
+            matches += Match.objects.filter(team_one=team)
+        return render(request, self.template_name, {'matches': matches, 'object_list': object_list} )
+
 
 class GroupsView(TemplateView):
     template_name = 'world_cup/groups_phase.html'
