@@ -1,9 +1,5 @@
 {% extends 'world_cup/groups_phase.html' %}
-{% block content %}
-W
-{% for team in object_list %}
-  {{team.country}}
-{% endfor %}
+{% block group_detail %}
 <form class="" action="/groups_phase/" method="post">
   {% csrf_token %}
 <table>
@@ -11,7 +7,7 @@ W
     <th>Fecha</th>
     <th colspan="4">Partido</th>
   </tr>
-  {% for match in matches %}
+  {% for user_match in user_matches %}
   <tr>
     <td>{{match.date}}</td>
     <td>{{match.team_one}}</td>

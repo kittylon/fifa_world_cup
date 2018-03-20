@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.http import JsonResponse
 from .forms import  SignUpForm
 from clients.models import Client, Profile
+from world_cup.models import Team, RealMatch, UserMatch
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
@@ -39,7 +40,18 @@ def register_user(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
+            real_matches = RealMatch.objects.all()
+            for real_match in real_matches:
+                new_user_match = UserMatch(
+                                    date=real_match.date,
+                                    phase=real_match.phase,
+                                    group=real_match.group,
+                                    team_one=real_match.team_one,
+                                    team_two=real_match.team_two,
+                                    user=user)
+                new_user_match.save()
             return redirect('groups_phase')
+
     else:
         form = SignUpForm()
     return render(request, 'registration/register_user.html', {'form': form})

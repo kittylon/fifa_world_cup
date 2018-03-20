@@ -66,7 +66,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'world_cup.context_processor.Teams_data',
-                'world_cup.context_processor.Matches_data',
+                'world_cup.context_processor.UserMatch_data',
             ],
         },
     },
