@@ -2,7 +2,6 @@
 {% block content %}
 
 Hola {{ user.get_username }}!
-
 <nav class="navbar navbar-inverse" role="navigation">
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
@@ -13,26 +12,15 @@ Hola {{ user.get_username }}!
   <div class="collapse navbar-collapse" id="navbar-collapse-01">
     <ul class="nav navbar-nav">
       <li class="active"><a href="#fakelink">Grupo A</a></li>
+      <li><a href="#fakelink">Grupo B</a></li>
+      <li><a href="#fakelink">Grupo C</a></li>
+      <li><a href="#fakelink">Grupo D</a></li>
+      <li><a href="#fakelink">Grupo F</a></li>
+      <li><a href="#fakelink">Grupo G</a></li>
+      <li><a href="#fakelink">Grupo H</a></li>
     </ul>
   </div><!-- /.navbar-collapse -->
 </nav><!-- /navbar -->
-<form class="" action="/groups_phase/" method="post">
-  {% csrf_token %}
-<table>
-  <tr>
-    <th>Fecha</th>
-    <th colspan="4">Partido</th>
-  </tr>
-  {% for match in matches %}
-  <tr>
-    <td>{{match.date}}</td>
-    <td>{{match.team_one}}</td>
-    <td><input type="number" name="{{match.pk}}_one" value='0'>
-    <td><input type="number" name="{{match.pk}}_two" value='0'>
-    <td>{{match.team_two}}</td>
-  </tr>
-  {% endfor %}
-</table>
-<input type="submit" name="" value="Registrar">
-</form>
+{% block group_detail %}
+{% endblock %}
 {% endblock %}

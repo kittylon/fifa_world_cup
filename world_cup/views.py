@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -6,6 +7,22 @@ from world_cup.models import UserGuess, Match, Team
 from django.contrib.auth.decorators import login_required
 import json
 # Views to register a new user
+
+class GroupDetailView(TemplateView):
+    template_name='world_cup/group_detail.html'
+    model = Team
+
+    def get(self, request, *args, **kwargs):
+        query = self.kwargs['query']
+        object_list =  Team.objects.filter(group=query)
+        return render(request, self.template_name, {'object_list': object_list} )
+    #
+    # def get_queryset(self):
+    #     print('Hola, soy json')
+    #     query = self.kwargs['query']
+    #     print(query)
+    #     print(Team.objects.filter(group=query))
+    #     return Team.objects.filter(group=query)
 
 class GroupsView(TemplateView):
     template_name = 'world_cup/groups_phase.html'
@@ -16,7 +33,7 @@ class GroupsView(TemplateView):
         obj_match = get_object_or_404(Match, pk=match)
         gamble = UserGuess(match=obj_match, team_one_score=team_one,
                         team_two_score=team_two, user=user)
-        gamble.save()                
+        gamble.save()
         return gamble.pk
 
     def post(self, request, *args, **kwargs):

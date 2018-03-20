@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Team(models.Model):
-    GROUP_CHOICES = (('A','Grupo A'), ('GROUP_B','Grupo B'), ('GROUP_C','Grupo C'),
-                    ('GROUP_D','Grupo D'), ('GROUP_E','Grupo E'), ('GROUP_F','Grupo F'),
-                    ('GROUP_G','Grupo G'), ('GROUP_H','Grupo H'))
+    GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
+                    ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
+                    ('G','Grupo G'), ('H','Grupo H'))
 
     country = models.CharField(max_length=255)
     group = models.CharField(max_length=50, choices=GROUP_CHOICES, null=False)
