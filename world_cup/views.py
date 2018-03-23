@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from world_cup.models import RealMatch, UserMatch, Team
+from world_cup.models import RealMatch, UserMatch, Team, UserTeam
 from django.contrib.auth.decorators import login_required
 import json
 # Views to register a new user
@@ -24,6 +24,7 @@ class GroupsView(TemplateView):
 
     @staticmethod
     def update_team(user, team, points, goals_favor, goals_against):
+        print(team.user)
         team.points += int(points)
         team.goals_favor += int(goals_favor)
         team.goals_against += int(goals_against)
@@ -84,40 +85,30 @@ class GroupsView(TemplateView):
 
 class SummaryView(TemplateView):
     template_name = 'world_cup/summary.html'
-    groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',]
 
-    def get(self, request, *args, **kwargs):
-        SummaryView.sort_groups(request.user)
-        object_list =  UserMatch.objects.filter(user=request.user, gambled=True)
-        groups = SummaryView.sort_groups(request.user)
-        # for group in SummaryView.groups:
-        #     # import pdb; pdb.set_trace()
-        #     filter_list = list(filter(lambda match: match.group == group, object_list))
-        #     groups[group] = filter_list
-
-        # SummaryView.sort_groups()
-        return render(request, self.template_name, {'groups': groups, 'object_list': object_list} )
+    # @staticmethod
+    # def create_match(user, team_one, team_two, phase):
 
     @staticmethod
     def sort_groups(user):
-        object_list =  UserMatch.objects.filter(user=user, gambled=True)
+        user_teams = UserTeam.objects.filter(user=user).order_by('group','-points','-goals_favor', 'goals_against')
+        players = {}
+        for group in SummaryView.groups:
+            x = filter(lambda match: match.group == group, user_teams)
+            # import pdb; pdb.set_trace()
+            filter_list = list(filter(lambda match: match.group == group, user_teams))
+            players[group] = filter_list[:2]
+        print(players)
+        return user_teams
+
+    def get(self, request, *args, **kwargs):
+        object_list =  UserMatch.objects.filter(user=request.user, gambled=True)
         groups = {}
         for group in SummaryView.groups:
+            x = filter(lambda match: match.group == group, object_list)
+            # import pdb; pdb.set_trace()
             filter_list = list(filter(lambda match: match.group == group, object_list))
             groups[group] = filter_list
-        SummaryView.order_group(user, groups)
-        return groups
-
-    @staticmethod
-    def order_group(user, groups):
-        for group, team in groups.items():
-            print(group)
-            print(team)
-            # import pdb; pdb.set_trace()
-            # filter_list = list(filter(lambda match: match.group == group, object_list))
-            # groups[group] = filter_list
-
-        return groups
-        # object_list =  UserMatch.objects.filter(user=request.user, gambled=True)
-        # object_list.sort(key=lambda team: team.points, reverse=True)
-        # ordered_teams = sorted(ut, key=lambda x: x.count, reverse=True)
+        SummaryView.sort_groups(request.user)
+        return render(request, self.template_name, {'groups': groups, 'object_list': object_list} )
