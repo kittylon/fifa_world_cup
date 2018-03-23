@@ -2,6 +2,9 @@
 {% block content %}
 Hola {{ user.get_username }}!
 Estas son tus predicciones:
+<br>
+{% for key, value in groups.items %}
+  <b>Grupo {{ key }} </b>
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -13,7 +16,7 @@ Estas son tus predicciones:
     </tr>
   </thead>
   <tbody>
-  {% for guess in object_list %}
+  {% for guess in value %}
   <tr>
     <td>{{guess.date}}</td>
     <td>{{guess.team_one}}</td>
@@ -24,4 +27,7 @@ Estas son tus predicciones:
   {% endfor %}
   </tbody>
 </table>
+
+{% endfor %}
+
 {% endblock %}

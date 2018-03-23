@@ -14,8 +14,13 @@
   <tr>
     <td>{{match.date}}</td>
     <td>{{match.team_one}}</td>
-    <td><input type="number" name="{{match.pk}}_one" value='0'>
-    <td><input type="number" name="{{match.pk}}_two" value='0'>
+    {% if match.gambled == False %}
+    <td><input type="number" name="{{match.label}}_1" value={{match.team_one_score}}></td>
+    <td><input type="number" name="{{match.label}}_2" value={{match.team_two_score}}></td>
+    {% else %}
+    <td>{{match.team_one_score}}</td>
+    <td>{{match.team_two_score}}</td>
+    {% endif %}
     <td>{{match.team_two}}</td>
   </tr>
   {% endfor %}

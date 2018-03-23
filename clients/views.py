@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.http import JsonResponse
 from .forms import  SignUpForm
 from clients.models import Client, Profile
-from world_cup.models import Team, RealMatch, UserMatch
+from world_cup.models import Team, RealMatch, UserMatch, UserTeam
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
@@ -41,15 +41,36 @@ def register_user(request):
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
             real_matches = RealMatch.objects.all()
+            all_teams = Team.objects.all()
+            for team in all_teams:
+                new_user_team = UserTeam(country = team.country,
+                                        group = team.group,
+                                        user=user)
+                new_user_team.save()
+            user_teams = UserTeam.objects.filter(user=user)
+            team_one_user = ''
+            team_two_user = ''
             for real_match in real_matches:
-                new_user_match = UserMatch(
-                                    date=real_match.date,
-                                    phase=real_match.phase,
-                                    group=real_match.group,
-                                    team_one=real_match.team_one,
-                                    team_two=real_match.team_two,
-                                    user=user)
-                new_user_match.save()
+
+                    for team in user_teams:
+                        if real_match.team_one.country == team.country:
+                            team_one_user = team
+
+                        elif real_match.team_two.country == team.country:
+                            team_two_user = team
+
+                        if team_one_user != '' and team_two_user != '':
+                            new_user_match = UserMatch(label=real_match.label,
+                                                        date=real_match.date,
+                                                        phase=real_match.phase,
+                                                        group=real_match.group,
+                                                        team_one=team_one_user,
+                                                        team_two=team_two_user,
+                                                        user=user)
+                            new_user_match.save()
+                            team_one_user = ''
+                            team_two_user = ''
+                        # print(team_one_user, team_two_user)
             return redirect('groups_phase')
 
     else:

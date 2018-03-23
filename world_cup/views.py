@@ -14,7 +14,7 @@ class GroupDetailView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         group = self.kwargs['query']
-        object_list = UserMatch.objects.filter(group=group)
+        object_list = UserMatch.objects.filter(group=group, user=request.user)
         return render(request, self.template_name, {'object_list': object_list} )
 
 
@@ -23,13 +23,40 @@ class GroupsView(TemplateView):
     model = UserMatch
 
     @staticmethod
-    def save_gamble(user, match, team_one, team_two):
-        user_match = get_object_or_404(UserMatch, pk=match)
-        user_match.team_one_score = team_one
-        user_match.team_two_score = team_two
+    def update_team(user, team, points, goals_favor, goals_against):
+        team.points += int(points)
+        team.goals_favor += int(goals_favor)
+        team.goals_against += int(goals_against)
+        team.save()
+        return team.pk
+
+    @staticmethod
+    def define_points(user, user_match, score_one, score_two):
+        points_one = 0
+        points_two = 0
+        if user_match.team_one_score == user_match.team_two_score:
+            points_one = 1
+            points_two = 1
+        elif user_match.team_one_score > user_match.team_two_score:
+            points_one = 3
+            points_two = 0
+        else:
+            points_one = 0
+            points_two = 3
+
+        GroupsView.update_team(user, user_match.team_one, points_one, score_one, score_two)
+        GroupsView.update_team(user, user_match.team_two, points_two, score_two, score_one)
+        return user_match.pk
+
+    @staticmethod
+    def save_gamble(user, label, score_one, score_two):
+        user_match = get_object_or_404(UserMatch, label=label, user=user)
+        user_match.team_one_score = score_one
+        user_match.team_two_score = score_two
         user_match.user = user
         user_match.gambled = True
         user_match.save()
+        GroupsView.define_points(user, user_match, score_one, score_two)
         return user_match.pk
 
     def post(self, request, *args, **kwargs):
@@ -38,27 +65,59 @@ class GroupsView(TemplateView):
         user = request.user
         match_id = ''
         team_label = ''
-        team_one = ''
-        team_two = ''
-        print(dict_gamble)
+        score_one = ''
+        score_two = ''
         for key, value in dict_gamble.items():
-            match_id = key[0]
-            team_label = key[-3:]
-            if team_label == 'one':
-                team_one = value
-            elif team_label =='two':
-                team_two = value
+            match_num, phase, group, team_num = key.split('_')
+            if team_num == '1':
+                score_one = value
+            elif team_num == '2':
+                score_two = value
 
-            if team_one != '' and team_two != '':
-                GroupsView.save_gamble(user, match_id, team_one, team_two)
-                team_one = ''
-                team_two = ''
+            if score_one != '' and score_two != '':
+                label = match_num +'_' + phase + '_' + group
+                GroupsView.save_gamble(user, label, score_one, score_two)
+                score_one = ''
+                score_two = ''
 
         return redirect('summary')
 
 class SummaryView(TemplateView):
     template_name = 'world_cup/summary.html'
+    groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
     def get(self, request, *args, **kwargs):
+        SummaryView.sort_groups(request.user)
         object_list =  UserMatch.objects.filter(user=request.user, gambled=True)
-        return render(request, self.template_name, {'object_list': object_list} )
+        groups = SummaryView.sort_groups(request.user)
+        # for group in SummaryView.groups:
+        #     # import pdb; pdb.set_trace()
+        #     filter_list = list(filter(lambda match: match.group == group, object_list))
+        #     groups[group] = filter_list
+
+        # SummaryView.sort_groups()
+        return render(request, self.template_name, {'groups': groups, 'object_list': object_list} )
+
+    @staticmethod
+    def sort_groups(user):
+        object_list =  UserMatch.objects.filter(user=user, gambled=True)
+        groups = {}
+        for group in SummaryView.groups:
+            filter_list = list(filter(lambda match: match.group == group, object_list))
+            groups[group] = filter_list
+        SummaryView.order_group(user, groups)
+        return groups
+
+    @staticmethod
+    def order_group(user, groups):
+        for group, team in groups.items():
+            print(group)
+            print(team)
+            # import pdb; pdb.set_trace()
+            # filter_list = list(filter(lambda match: match.group == group, object_list))
+            # groups[group] = filter_list
+
+        return groups
+        # object_list =  UserMatch.objects.filter(user=request.user, gambled=True)
+        # object_list.sort(key=lambda team: team.points, reverse=True)
+        # ordered_teams = sorted(ut, key=lambda x: x.count, reverse=True)
