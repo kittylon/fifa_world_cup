@@ -1,0 +1,33 @@
+{% extends 'clients/base.html' %}
+{% block content %}
+Hola {{ user.get_username }}!
+Estas son tus predicciones:
+<br>
+<a href="">
+  llenar fase de Cuartos
+</a>
+<br>
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th>Fecha</th>
+      <th>Equipo 1</th>
+      <th>Goles</th>
+      <th>Goles</th>
+      <th>Equipo 2</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for guess in object_list %}
+  <tr>
+    <td>{{guess.date}}</td>
+    <td>{{guess.team_one}}</td>
+    <td>{{guess.team_one_score}}</td>
+    <td>{{guess.team_two_score}}</td>
+    <td>{{guess.team_two}}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

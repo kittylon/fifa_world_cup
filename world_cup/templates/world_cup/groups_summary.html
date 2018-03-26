@@ -3,6 +3,10 @@
 Hola {{ user.get_username }}!
 Estas son tus predicciones:
 <br>
+<a href="/fase_octavos/">
+  llenar fase de Octavos
+</a>
+<br>
 {% for key, value in groups.items %}
   <b>Grupo {{ key }} </b>
 <table class="table">
@@ -29,5 +33,4 @@ Estas son tus predicciones:
 </table>
 
 {% endfor %}
-
 {% endblock %}
