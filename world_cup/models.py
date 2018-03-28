@@ -38,7 +38,7 @@ class RealMatch(models.Model):
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
-    label = models.CharField(max_length=50, null=False, blank= True)
+    label = models.CharField(max_length=50, null=False, blank= True, editable=False)
     date = models.DateField(null=True, blank=True)
     phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)
     group = models.CharField(max_length=50, choices=GROUP_CHOICES, null=True, blank=True)
@@ -58,7 +58,11 @@ class RealMatch(models.Model):
     played = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.label
+        return self.label + '_' + str(self.team_one) + '_vs._' + str(self.team_two)
+
+    class Meta:
+        verbose_name = 'RealMatch'
+        verbose_name_plural = 'RealMatches'
 
 class UserMatch(models.Model):
     PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Cuartos','Cuartos'),
@@ -87,6 +91,11 @@ class UserMatch(models.Model):
     team_one_score = models.PositiveIntegerField(default=0)
     team_two_score = models.PositiveIntegerField(default=0)
     gambled = models.BooleanField(default=False)
+    points = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.label + "_" + str(self.user)
+
+    class Meta:
+        verbose_name = 'UserMatch'
+        verbose_name_plural = 'UserMatches'

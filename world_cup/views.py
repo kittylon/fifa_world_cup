@@ -64,7 +64,6 @@ class FinalsView(LoginRequiredMixin, TemplateView):
                 GroupsView.save_gamble(user, label, score_one, score_two)
                 score_one = ''
                 score_two = ''
-        # SemiView.create_final(user)
         return redirect('finals_summary')
 
 class SummaryTercerCuartoView(LoginRequiredMixin, TemplateView):
@@ -347,7 +346,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         groups = {}
-        if request.user.is_superuser:
+        if request.user.is_staff:
             return redirect('reypar_admin')
         else:
             object_list = UserMatch.objects.filter(user=request.user, phase='Groups')
@@ -482,10 +481,3 @@ class ReyparAdminView(LoginRequiredMixin, TemplateView):
 
     def test_func(self):
         return test_settings(self.request.user)
-
-    def get(self, request, *args, **kwargs):
-        try:
-            object_list =  RealMatch.objects.all()
-        except:
-            raise Http404
-        return render(request, self.template_name, {'object_list': object_list} )
