@@ -1,11 +1,11 @@
-{% extends 'world_cup/base.html' %}
+{% extends 'clients/base.html' %}
 {% block content %}
+
+Hola {{ user.get_username }}
 <br>
 
-<form class="" action="/fase_grupos/" method="post">
+<form class="" action="/fase_octavos/" method="post">
 {% csrf_token %}
-{% for key, value in groups.items %}
-  <b>Grupo {{ key }} </b>
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -14,14 +14,16 @@
       <th>Goles</th>
       <th>Goles</th>
       <th>Equipo 2</th>
+      <!-- <th>Penal</th>
+      <th>Penal</th> -->
     </tr>
   </thead>
   <tbody>
-  {% for match in value %}
+  {% for match in object_list %}
   <tr>
     <td>{{match.date}}</td>
     <td>{{match.team_one}}</td>
-    {% if match.gambled == False  or match.played == False %}
+    {% if match.gambled == False %}
     <td><input type="number" name="{{match.label}}_1" value={{match.team_one_score}}></td>
     <td><input type="number" name="{{match.label}}_2" value={{match.team_two_score}}></td>
     {% else %}
@@ -29,13 +31,15 @@
     <td>{{match.team_two_score}}</td>
     {% endif %}
     <td>{{match.team_two}}</td>
+    <!-- <td><input type="number" name="{{match.label}}_penals_1" value={{match.team_one_score}}></td>
+    <td><input type="number" name="{{match.label}}penals_2" value={{match.team_two_score}}></td> -->
   </tr>
   {% endfor %}
   </tbody>
 </table>
-{% endfor %}
 <input type="submit" name="" value="Registrar">
 </form>
+
 {% block group_detail %}
 {% endblock %}
 {% endblock %}

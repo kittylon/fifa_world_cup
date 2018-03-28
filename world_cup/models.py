@@ -33,7 +33,7 @@ class UserTeam(models.Model):
 
 class RealMatch(models.Model):
     PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Cuartos','Cuartos'),
-                    ('Semi','Semifinal'),('3_y_4','Puesto 3 y 4'), ('Finals','Final'))
+                    ('Semi','Semifinal'),('3y4','Puesto 3 y 4'), ('Finals','Final'))
 
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
@@ -57,9 +57,12 @@ class RealMatch(models.Model):
     team_two_score = models.PositiveIntegerField(default=0)
     played = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.label
+
 class UserMatch(models.Model):
     PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Cuartos','Cuartos'),
-                    ('Semi','Semifinal'),('3_y_4','Puesto 3 y 4'), ('Finals','Final'))
+                    ('Semi','Semifinal'),('3y4','Puesto 3 y 4'), ('Finals','Final'))
 
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
@@ -84,3 +87,6 @@ class UserMatch(models.Model):
     team_one_score = models.PositiveIntegerField(default=0)
     team_two_score = models.PositiveIntegerField(default=0)
     gambled = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.label + "_" + str(self.user)
