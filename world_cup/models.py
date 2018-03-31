@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your models here.
 class Team(models.Model):
@@ -63,6 +65,27 @@ class RealMatch(models.Model):
     class Meta:
         verbose_name = 'RealMatch'
         verbose_name_plural = 'RealMatches'
+
+    @staticmethod
+    def points_user_match(label, team_one_score, team_two_score):
+        played_matches = UserMatch.objects.filter(label=label, gambled=True)
+        for match in played_matches:
+            if match.team_one_score == team_one_score \
+            and match.team_two_score == team_two_score:
+                print("3 points " + str(match.user))
+            elif (match.team_one_score > match.team_two_score and team_one_score > team_two_score) \
+            or (match.team_one_score < match.team_two_score and team_one_score < team_two_score):
+                print("1 point " + str(match.user))
+            else:
+                print("o poins :( " + str(match.user))
+
+    def save(self, *args, **kwargs):
+        winner = None
+        if self.played == True:
+            RealMatch.points_user_match(self.label, self.team_one_score, self.team_two_score)
+        else:
+            print("nein mann!")
+        super(RealMatch, self).save(*args, **kwargs)
 
 class UserMatch(models.Model):
     PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Cuartos','Cuartos'),

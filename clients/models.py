@@ -31,6 +31,7 @@ class Profile(models.Model):
         related_name = 'users'
     )
     job_title = models.CharField(max_length=200, blank=True, default='')
+    total_points = models.PositiveIntegerField(blank=True, default=0)
 
 #Para la extensión de los usuarios, esto se debe tener antes de la creación del super usuario
 @receiver(post_save, sender=User)

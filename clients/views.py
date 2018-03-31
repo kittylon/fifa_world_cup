@@ -70,7 +70,6 @@ def register_user(request):
                             new_user_match.save()
                             team_one_user = ''
                             team_two_user = ''
-                        # print(team_one_user, team_two_user)
             return redirect('groups_phase')
 
     else:
