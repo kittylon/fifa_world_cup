@@ -5,7 +5,8 @@
 <form class="" action="/fase_grupos/" method="post">
 {% csrf_token %}
 {% for key, value in groups.items %}
-  <b>Grupo {{ key }} </b>
+  <h3>Grupo {{ key }} </h3>
+<div class='panel panel-default'>
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -22,8 +23,8 @@
     <td>{{match.date}}</td>
     <td>{{match.team_one}}</td>
     {% if match.gambled == False  or match.played == False %}
-    <td><input type="number" name="{{match.label}}_1" value={{match.team_one_score}}></td>
-    <td><input type="number" name="{{match.label}}_2" value={{match.team_two_score}}></td>
+    <td class='col-xs-1'><input type="number" name="{{match.label}}_1" value={{match.team_one_score}}></td>
+    <td class='col-xs-1'><input type="number" name="{{match.label}}_2" value={{match.team_two_score}}></td>
     {% else %}
     <td>{{match.team_one_score}}</td>
     <td>{{match.team_two_score}}</td>
@@ -33,8 +34,11 @@
   {% endfor %}
   </tbody>
 </table>
+</div>
 {% endfor %}
-<input type="submit" name="" value="Registrar">
+<div class="col-xs-12 text-center">
+  <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar resultados">
+</div>
 </form>
 {% block group_detail %}
 {% endblock %}
