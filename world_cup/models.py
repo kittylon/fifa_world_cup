@@ -67,17 +67,34 @@ class RealMatch(models.Model):
         verbose_name_plural = 'RealMatches'
 
     @staticmethod
+    def sum_user_points(user):
+        total = 0
+        played_matches = UserMatch.objects.filter(user=user, gambled=True)
+        for match in played_matches:
+            total += match.points
+
+        print(total)
+        user.profile.total_points = total
+        user.save()
+        print("YAY" + str(user.profile.total_points))
+        return
+
+    @staticmethod
     def points_user_match(label, team_one_score, team_two_score):
         played_matches = UserMatch.objects.filter(label=label, gambled=True)
         for match in played_matches:
             if match.team_one_score == team_one_score \
             and match.team_two_score == team_two_score:
-                print("3 points " + str(match.user))
+                match.points = 3
             elif (match.team_one_score > match.team_two_score and team_one_score > team_two_score) \
             or (match.team_one_score < match.team_two_score and team_one_score < team_two_score):
-                print("1 point " + str(match.user))
+                match.points = 1
             else:
-                print("o poins :( " + str(match.user))
+                match.points = 0
+            match.save()
+            RealMatch.sum_user_points(match.user)
+
+        return
 
     def save(self, *args, **kwargs):
         winner = None
