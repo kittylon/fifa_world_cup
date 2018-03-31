@@ -8,6 +8,7 @@
 clients/__pycache__/
 world_cup/__pycache__/
 polla_reypar/__pycache__/
+py3env/
 local_settings.py
 db.sqlite3
 media
