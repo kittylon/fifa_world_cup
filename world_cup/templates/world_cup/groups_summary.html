@@ -1,14 +1,17 @@
-{% extends 'clients/base.html' %}
+{% extends 'world_cup/base.html' %}
 {% block content %}
-Hola {{ user.get_username }}!
-Estas son tus predicciones:
 <br>
-<a href="/fase_octavos/">
-  llenar fase de Octavos
-</a>
+<div class="col-xs-12 text-center">
+  <a href='/fase_octavos/' class='btn btn-lg btn-primary'>Ir a Octavos </a>
+</div>
+
+<br>
+
+Estas son tus predicciones:
+
 <br>
 {% for key, value in groups.items %}
-  <b>Grupo {{ key }} </b>
+  <h3>Grupo {{ key }} </h3>
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -32,5 +35,10 @@ Estas son tus predicciones:
   </tbody>
 </table>
 
+
 {% endfor %}
+<div class="col-xs-12 text-center">
+  <a href='/fase_octavos/' class='btn btn-lg btn-primary'>Ir a Octavos </a>
+</div>
+
 {% endblock %}
