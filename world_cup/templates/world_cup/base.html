@@ -10,17 +10,23 @@
   </head>
   <body>
       <div class="demo-headline">
+        {% include 'world_cup/navbar.html' %}
+      </div>
+      <div class='container' style="margin-bottom: 4rem;">
           <h2 class="demo-logo">
-            <div class="logo"></div>
             Polla Mundialista Reypar
             <small>FIFA 2018⚽</small>
           </h2>
-          <a href="/logout/">
-            logout
-          </a>
+          
+          <p>A continación llenara los resultados para la fase de grupos, recuerde que despues de que registre los resultados no podrá modificarlos.</p>
+
+        {% block content %}
+        {% endblock %}
       </div>
-      Hola {{ user.get_short_name }}!
-    {% block content %}
-    {% endblock %}
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </body>
 </html>
