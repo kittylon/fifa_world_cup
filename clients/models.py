@@ -31,6 +31,12 @@ class Profile(models.Model):
         related_name = 'users'
     )
     job_title = models.CharField(max_length=200, blank=True, default='')
+    groups_points = models.PositiveIntegerField(blank=True, default=0)
+    eights_points = models.PositiveIntegerField(blank=True, default=0)
+    fourths_points = models.PositiveIntegerField(blank=True, default=0)
+    semi_points = models.PositiveIntegerField(blank=True, default=0)
+    trd_fth_points = models.PositiveIntegerField(blank=True, default=0)
+    final_points = models.PositiveIntegerField(blank=True, default=0)
     total_points = models.PositiveIntegerField(blank=True, default=0)
     groups_filled = models.BooleanField(default=False, null=False)
     eights_filled = models.BooleanField(default=False, null=False)

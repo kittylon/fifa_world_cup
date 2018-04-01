@@ -57,6 +57,8 @@ class RealMatch(models.Model):
                 related_name='real_team_two')
     team_one_score = models.PositiveIntegerField(default=0)
     team_two_score = models.PositiveIntegerField(default=0)
+    penals_team_one = models.PositiveIntegerField(default=0, blank=True, null=True)
+    penals_team_two = models.PositiveIntegerField(default=0,  blank=True, null=True)
     played = models.BooleanField(default=False)
 
     def __str__(self):
@@ -67,20 +69,21 @@ class RealMatch(models.Model):
         verbose_name_plural = 'RealMatches'
 
     @staticmethod
-    def sum_user_points(user):
-        total = 0
-        played_matches = UserMatch.objects.filter(user=user, gambled=True)
+    def score_groups(user):
+        eights_score = 0
+        played_matches = UserMatch.objects.filter(user=user, gambled=True, phase='Groups')
         for match in played_matches:
-            total += match.points
+            eights_score += match.points
 
-        user.profile.total_points = total
+        user.profile.eights_points = eights_score
         user.save()
+        print(str(user.first_name) + " " + str(user.profile.eights_points))
         return
 
     @staticmethod
     def points_user_match(label, team_one_score, team_two_score):
-        played_matches = UserMatch.objects.filter(label=label, gambled=True)
-        for match in played_matches:
+        gambled_matches = UserMatch.objects.filter(label=label, gambled=True)
+        for match in gambled_matches:
             if match.team_one_score == team_one_score \
             and match.team_two_score == team_two_score:
                 match.points = 3
@@ -91,14 +94,12 @@ class RealMatch(models.Model):
                 match.points = 0
 
             match.save()
-            RealMatch.sum_user_points(match.user)
+            RealMatch.score_groups(match.user)
 
         return
 
     @staticmethod
     def save_groups():
-        # all_played =
-        played_flag = []
         played_groups = RealMatch.objects.filter(phase='Groups', played=True).count()
         groups_matches = RealMatch.objects.filter(phase='Groups').count()
 
@@ -108,39 +109,14 @@ class RealMatch(models.Model):
             print("Not allowed to create groups yet")
         return
 
-    # @staticmethod
-    # def define_points(match):
-    #     points_one = 0
-    #     points_two = 0
-    #     if match.team_one_score == match.team_two_score:
-    #         points_one = 1
-    #         points_two = 1
-    #         winner = None
-    #         loser = None
-    #     elif match.team_one_score > match.team_two_score:
-    #         points_one = 3
-    #         points_two = 0
-    #         winner = user_match.team_one
-    #         loser = user_match.team_two
-    #     else:
-    #         points_one = 0
-    #         points_two = 3
-    #         winner = user_match.team_two
-    #         loser = user_match.team_one
-
 
     def save(self, *args, **kwargs):
         winner = None
         if self.played == True:
             RealMatch.points_user_match(self.label, self.team_one_score, self.team_two_score)
-            # RealMatch.define_points()
             if self.phase == 'Groups':
                 RealMatch.save_groups()
-        # elif self.phase == 'Eights':
-        # elif self.phase == 'Cuartos':
-        # elif self.phase == 'Semi':
-        # elif self.phase == '3y4':
-        # elif self.phase == 'Finals':
+
 
         super(RealMatch, self).save(*args, **kwargs)
 
@@ -170,6 +146,8 @@ class UserMatch(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='gambler')
     team_one_score = models.PositiveIntegerField(default=0)
     team_two_score = models.PositiveIntegerField(default=0)
+    penals_team_one = models.PositiveIntegerField(default=0, blank=True, null=True)
+    penals_team_two = models.PositiveIntegerField(default=0,  blank=True, null=True)
     gambled = models.BooleanField(default=False)
     points = models.PositiveIntegerField(default=0)
 
