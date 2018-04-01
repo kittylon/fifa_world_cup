@@ -73,10 +73,8 @@ class RealMatch(models.Model):
         for match in played_matches:
             total += match.points
 
-        print(total)
         user.profile.total_points = total
         user.save()
-        print("YAY" + str(user.profile.total_points))
         return
 
     @staticmethod
@@ -91,17 +89,59 @@ class RealMatch(models.Model):
                 match.points = 1
             else:
                 match.points = 0
+
             match.save()
             RealMatch.sum_user_points(match.user)
 
         return
 
+    @staticmethod
+    def save_groups():
+        # all_played =
+        played_flag = []
+        played_groups = RealMatch.objects.filter(phase='Groups', played=True).count()
+        groups_matches = RealMatch.objects.filter(phase='Groups').count()
+
+        if groups_matches == played_groups:
+            print("create groups")
+        else:
+            print("Not allowed to create groups yet")
+        return
+
+    # @staticmethod
+    # def define_points(match):
+    #     points_one = 0
+    #     points_two = 0
+    #     if match.team_one_score == match.team_two_score:
+    #         points_one = 1
+    #         points_two = 1
+    #         winner = None
+    #         loser = None
+    #     elif match.team_one_score > match.team_two_score:
+    #         points_one = 3
+    #         points_two = 0
+    #         winner = user_match.team_one
+    #         loser = user_match.team_two
+    #     else:
+    #         points_one = 0
+    #         points_two = 3
+    #         winner = user_match.team_two
+    #         loser = user_match.team_one
+
+
     def save(self, *args, **kwargs):
         winner = None
         if self.played == True:
             RealMatch.points_user_match(self.label, self.team_one_score, self.team_two_score)
-        else:
-            print("nein mann!")
+            # RealMatch.define_points()
+            if self.phase == 'Groups':
+                RealMatch.save_groups()
+        # elif self.phase == 'Eights':
+        # elif self.phase == 'Cuartos':
+        # elif self.phase == 'Semi':
+        # elif self.phase == '3y4':
+        # elif self.phase == 'Finals':
+
         super(RealMatch, self).save(*args, **kwargs)
 
 class UserMatch(models.Model):

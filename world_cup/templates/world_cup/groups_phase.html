@@ -37,7 +37,9 @@
 </div>
 {% endfor %}
 <div class="col-xs-12 text-center">
+{% if user.profile.groups_filled == False %}
   <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar resultados">
+{% endif %}
 </div>
 </form>
 {% block group_detail %}

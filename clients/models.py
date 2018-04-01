@@ -32,8 +32,12 @@ class Profile(models.Model):
     )
     job_title = models.CharField(max_length=200, blank=True, default='')
     total_points = models.PositiveIntegerField(blank=True, default=0)
-    fill_groups = models.BooleanField(default=False, null=False)
-
+    groups_filled = models.BooleanField(default=False, null=False)
+    eights_filled = models.BooleanField(default=False, null=False)
+    fourths_filled = models.BooleanField(default=False, null=False)
+    semi_filled = models.BooleanField(default=False, null=False)
+    trd_fth_filled = models.BooleanField(default=False, null=False)
+    final_filled = models.BooleanField(default=False, null=False)
 
 #Para la extensión de los usuarios, esto se debe tener antes de la creación del super usuario
 @receiver(post_save, sender=User)

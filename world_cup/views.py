@@ -64,6 +64,8 @@ class FinalsView(LoginRequiredMixin, TemplateView):
                 GroupsView.save_gamble(user, label, score_one, score_two)
                 score_one = ''
                 score_two = ''
+        request.user.profile.final_filled = True
+        request.user.save()
         return redirect('finals_summary')
 
 class SummaryTercerCuartoView(LoginRequiredMixin, TemplateView):
@@ -122,7 +124,8 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
                 GroupsView.save_gamble(user, label, score_one, score_two)
                 score_one = ''
                 score_two = ''
-        # SemiView.create_final(user)
+        request.user.profile.trd_fth_filled = True
+        request.user.save()
         return redirect('third_fourth_summary')
 
 class SummarySemiView(LoginRequiredMixin, TemplateView):
@@ -193,6 +196,8 @@ class SemiView(LoginRequiredMixin, TemplateView):
                 score_two = ''
         SemiView.create_final(user)
         SemiView.create_third_fourth(user)
+        request.user.profile.semi_filled = True
+        request.user.save()
         return redirect('semi_summary')
 
 class SummaryFourthsView(LoginRequiredMixin, TemplateView):
@@ -254,6 +259,8 @@ class FourthsView(LoginRequiredMixin, TemplateView):
                 score_one = ''
                 score_two = ''
         FourthsView.create_semi(user)
+        request.user.profile.fourths_filled = True
+        request.user.save()
         return redirect('fourths_summary')
 
 class SummaryEightsView(LoginRequiredMixin, TemplateView):
@@ -324,6 +331,8 @@ class EightsView(LoginRequiredMixin, TemplateView):
                 score_one = ''
                 score_two = ''
         EightsView.create_fourths(user)
+        request.user.profile.eights_filled = True
+        request.user.save()
         return redirect('eights_summary')
 
     @staticmethod
@@ -348,6 +357,8 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         groups = {}
         if request.user.is_staff:
             return redirect('reypar_admin')
+        elif request.user.profile.groups_filled == True:
+            return redirect('groups_summary')
         else:
             object_list = UserMatch.objects.filter(user=request.user, phase='Groups')
 
@@ -454,6 +465,8 @@ class GroupsView(LoginRequiredMixin, TemplateView):
                 score_one = ''
                 score_two = ''
         GroupsView.sort_groups(user)
+        request.user.profile.groups_filled = True
+        request.user.save()
         return redirect('groups_summary')
 
 class SummaryGroupsView(LoginRequiredMixin, TemplateView):
