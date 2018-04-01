@@ -1,4 +1,4 @@
-{% extends 'clients/base.html' %}
+{% extends 'world_cup/base.html' %}
 {% block content %}
 
 Hola {{ user.get_username }}
@@ -37,7 +37,11 @@ Hola {{ user.get_username }}
   {% endfor %}
   </tbody>
 </table>
-<input type="submit" name="" value="Registrar">
+{% if user.profile.semi_filled == False %}
+<div class="col-xs-12 text-center">
+  <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar resultados">
+</div>
+{% endif %}
 </form>
 
 {% block group_detail %}

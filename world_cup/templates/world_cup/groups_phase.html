@@ -36,11 +36,11 @@
 </table>
 </div>
 {% endfor %}
-<div class="col-xs-12 text-center">
 {% if user.profile.groups_filled == False %}
+<div class="col-xs-12 text-center">
   <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar resultados">
-{% endif %}
 </div>
+{% endif %}
 </form>
 {% block group_detail %}
 {% endblock %}
