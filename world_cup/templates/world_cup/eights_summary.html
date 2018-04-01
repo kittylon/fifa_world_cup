@@ -2,10 +2,7 @@
 {% block content %}
 Hola {{ user.get_username }}!
 Estas son tus predicciones:
-<br>
-<a href="/fase_cuartos/">
-  llenar fase de Cuartos
-</a>
+
 <br>
 <table class="table">
   <thead class="thead-dark">
@@ -29,5 +26,12 @@ Estas son tus predicciones:
   {% endfor %}
   </tbody>
 </table>
+
+<br /><br />
+{% if user.profile.fourths_filled == False %}
+<div class="col-xs-12 text-center">
+  <a href='/fase_cuartos/' role='button' class='btn btn-lg btn-primary'>Llenar cuartos de final </a>
+</div>
+{% endif %}
 
 {% endblock %}

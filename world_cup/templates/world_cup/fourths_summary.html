@@ -29,5 +29,12 @@ Estas son tus predicciones:
   {% endfor %}
   </tbody>
 </table>
+<br />
+{% if user.profile.semi_filled == False %}
+<div class="col-xs-12 text-center">
+  <a href='/fase_semi/' role='button' class='btn btn-lg btn-primary'>Llenar semifinal </a>
+</div>
+{% endif %}
+
 
 {% endblock %}
