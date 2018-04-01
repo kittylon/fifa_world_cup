@@ -1,0 +1,21 @@
+<div class="btn-group btn-lg" role="group" aria-label="Basic example">
+{% if user.profile.groups_filled %}
+    <a href='/fase_grupos/' role="button" class="btn btn-inverse btn-lg">Grupos</a>
+{% endif %}
+{% if user.profile.groups_filled %}
+    <a href='/fase_octavos/' role="button" class="btn btn-inverse btn-lg">Octavos</a>
+{% endif %}
+{% if user.profile.eights_filled %}
+    <a href='/fase_cuartos/' role="button" class="btn btn-inverse btn-lg">Cuartos</a>
+{% endif %}
+{% if user.profile.fourths_filled %}
+    <a href='/fase_semifinal/' role="button" class="btn btn-inverse btn-lg">Semifinal</a>
+{% endif %}
+
+{% if user.profile.semi_filled %}
+    <a href='/fase_tercer_cuarto' role="button" class="btn btn-inverse btn-lg">tercer y cuarto</a>
+{% endif %}
+{% if user.profile.trd_fth_filled %}
+    <a href='/fase_final/' role="button" class="btn btn-inverse btn-lg">Final</a>
+{% endif %}
+</div>

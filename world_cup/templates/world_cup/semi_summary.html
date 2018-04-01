@@ -3,10 +3,6 @@
 Hola {{ user.get_username }}!
 Estas son tus predicciones:
 <br>
-<a href="/fase_tercer_cuarto/">
-  llenar fase de tercer y cuarto puesto
-</a>
-<br>
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -29,5 +25,13 @@ Estas son tus predicciones:
   {% endfor %}
   </tbody>
 </table>
+<br />
+{% if user.profile.trd_fth_filled == False %}
+<div class="col-xs-12 text-center">
+  <a href='/fase_tercer_cuarto/' role='button' class='btn btn-lg btn-primary'>Llenar fase de tercer y cuarto puesto</a>
+</div>
+{% endif %}
+
+
 
 {% endblock %}
