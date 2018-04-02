@@ -14,8 +14,8 @@ Hola {{ user.get_username }}
       <th>Goles</th>
       <th>Goles</th>
       <th>Equipo 2</th>
-      <!-- <th>Penal</th>
-      <th>Penal</th> -->
+      <th>Penal</th>
+      <th>Penal</th>
     </tr>
   </thead>
   <tbody>
@@ -31,8 +31,8 @@ Hola {{ user.get_username }}
     <td>{{match.team_two_score}}</td>
     {% endif %}
     <td>{{match.team_two.emoji}} {{match.team_two}}</td>
-    <!-- <td><input type="number" name="{{match.label}}_penals_1" value={{match.team_one_score}}></td>
-    <td><input type="number" name="{{match.label}}penals_2" value={{match.team_two_score}}></td> -->
+    <td><input type="number" name="{{match.label}}_penals_1" value={{match.penals_team_one}}></td>
+    <td><input type="number" name="{{match.label}}penals_2" value={{match.penals_team_two}}></td>
   </tr>
   {% endfor %}
   </tbody>
