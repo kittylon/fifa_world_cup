@@ -45,7 +45,8 @@ def register_user(request):
             for team in all_teams:
                 new_user_team = UserTeam(country = team.country,
                                         group = team.group,
-                                        user=user)
+                                        user=user,
+                                        emoji=team.emoji)
                 new_user_team.save()
             user_teams = UserTeam.objects.filter(user=user)
             team_one_user = ''

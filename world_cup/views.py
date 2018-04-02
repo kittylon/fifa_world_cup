@@ -299,9 +299,9 @@ class EightsView(LoginRequiredMixin, TemplateView):
         return
 
     @staticmethod
-    def create_match(user, label, phase, team_one, team_two):
+    def create_match(user, label, phase, team_one, team_two, date='2018-07-02'):
         new_match = UserMatch(user=user, label=label, phase=phase,
-                            team_one=team_one, team_two=team_two)
+                            team_one=team_one, team_two=team_two, date=date)
         new_match.save()
         return
 
@@ -337,12 +337,12 @@ class EightsView(LoginRequiredMixin, TemplateView):
 
     @staticmethod
     def create_eight(user, players):
-        EightsView.create_match(user, '1_Octavos', 'Eights', players['A'][0], players['B'][1])
-        EightsView.create_match(user, '2_Octavos', 'Eights', players['C'][0], players['D'][1])
-        EightsView.create_match(user, '3_Octavos', 'Eights', players['E'][0], players['F'][1])
-        EightsView.create_match(user, '4_Octavos', 'Eights', players['G'][0], players['H'][1])
-        EightsView.create_match(user, '5_Octavos', 'Eights', players['A'][1], players['B'][0])
-        EightsView.create_match(user, '6_Octavos', 'Eights', players['C'][1], players['D'][0])
+        EightsView.create_match(user, '1_Octavos', 'Eights', players['A'][0], players['B'][1], '2018-06-30')
+        EightsView.create_match(user, '2_Octavos', 'Eights', players['C'][0], players['D'][1], '2018-06-30')
+        EightsView.create_match(user, '3_Octavos', 'Eights', players['E'][0], players['F'][1], '2018-07-02')
+        EightsView.create_match(user, '4_Octavos', 'Eights', players['G'][0], players['H'][1], '2018-07-02')
+        EightsView.create_match(user, '5_Octavos', 'Eights', players['A'][1], players['B'][0], '2018-07-01')
+        EightsView.create_match(user, '6_Octavos', 'Eights', players['C'][1], players['D'][0], '2018-07-01')
         EightsView.create_match(user, '7_Octavos', 'Eights', players['E'][1], players['F'][0])
         EightsView.create_match(user, '8_Octavos', 'Eights', players['G'][1], players['H'][0])
         return

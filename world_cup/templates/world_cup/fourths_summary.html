@@ -21,10 +21,10 @@ Estas son tus predicciones:
   {% for guess in object_list %}
   <tr>
     <td>{{guess.date}}</td>
-    <td>{{guess.team_one}}</td>
+    <td>{{guess.team_one}} {{guess.team_one.emoji}}</td>
     <td>{{guess.team_one_score}}</td>
     <td>{{guess.team_two_score}}</td>
-    <td>{{guess.team_two}}</td>
+    <td>{{guess.team_two.emoji}} {{guess.team_two}}</td>
   </tr>
   {% endfor %}
   </tbody>

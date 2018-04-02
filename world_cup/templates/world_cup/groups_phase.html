@@ -21,7 +21,7 @@
   {% for match in value %}
   <tr>
     <td>{{match.date}}</td>
-    <td>{{match.team_one}}</td>
+    <td>{{match.team_one}} {{match.team_one.emoji}}</td>
     {% if match.gambled == False  or match.played == False %}
     <td class='col-xs-1'><input type="number" name="{{match.label}}_1" value={{match.team_one_score}}></td>
     <td class='col-xs-1'><input type="number" name="{{match.label}}_2" value={{match.team_two_score}}></td>
@@ -29,7 +29,7 @@
     <td>{{match.team_one_score}}</td>
     <td>{{match.team_two_score}}</td>
     {% endif %}
-    <td>{{match.team_two}}</td>
+    <td>{{match.team_two.emoji}} {{match.team_two}}</td>
   </tr>
   {% endfor %}
   </tbody>
