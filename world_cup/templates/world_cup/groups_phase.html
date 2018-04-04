@@ -20,16 +20,19 @@
   <tbody>
   {% for match in value %}
   <tr>
+    <input type="hidden" name="{{match.label}}|" value="{{match.label}}|">
     <td>{{match.date}}</td>
     <td>{{match.team_one}} {{match.team_one.emoji}}</td>
     {% if match.gambled == False  or match.played == False %}
-    <td class='col-xs-1'><input type="number" name="{{match.label}}_1" value={{match.team_one_score}}></td>
-    <td class='col-xs-1'><input type="number" name="{{match.label}}_2" value={{match.team_two_score}}></td>
+    <td class='col-xs-1'><input type="number" name="{{match.label}}|real_1" value={{match.team_one_score}}></td>
+    <td class='col-xs-1'><input type="number" name="{{match.label}}|real_2" value={{match.team_two_score}}></td>
     {% else %}
     <td>{{match.team_one_score}}</td>
     <td>{{match.team_two_score}}</td>
     {% endif %}
     <td>{{match.team_two.emoji}} {{match.team_two}}</td>
+    <input type="hidden" name="{{match.label}}|penals_1" value=''>
+    <input type="hidden" name="{{match.label}}|penals_2" value=''>
   </tr>
   {% endfor %}
   </tbody>
@@ -39,6 +42,10 @@
 {% if user.profile.groups_filled == False %}
 <div class="col-xs-12 text-center">
   <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar resultados">
+</div>
+{% elif user.profile.groups_filled == True %}
+<div class="col-xs-12 text-center">
+  <a href='/fase_octavos/' class='btn btn-lg btn-primary'>Ir a Octavos </a>
 </div>
 {% endif %}
 </form>

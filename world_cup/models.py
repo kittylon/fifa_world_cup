@@ -36,13 +36,13 @@ class UserTeam(models.Model):
         return self.country
 
 class RealMatch(models.Model):
-    PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Cuartos','Cuartos'),
+    PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Fourths','Cuartos'),
                     ('Semi','Semifinal'),('3y4','Puesto 3 y 4'), ('Finals','Final'))
 
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
-    label = models.CharField(max_length=50, null=False, blank= True, editable=False)
+    label = models.CharField(max_length=50, null=False, blank= True, editable=True)
     date = models.DateField(null=True, blank=True)
     phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)
     group = models.CharField(max_length=50, choices=GROUP_CHOICES, null=True, blank=True)
@@ -72,33 +72,50 @@ class RealMatch(models.Model):
 
     @staticmethod
     def score_groups(user):
-        eights_score = 0
+        groups_score = 0
         played_matches = UserMatch.objects.filter(user=user, gambled=True, phase='Groups')
         for match in played_matches:
-            eights_score += match.points
+            groups_score += match.points
 
-        user.profile.eights_points = eights_score
-        user.save()
+        print(groups_score)
+        # user.profile.groups_points = groups_score
+        # user.save()
         print(str(user.first_name) + " " + str(user.profile.eights_points))
         return
 
-    @staticmethod
-    def points_user_match(label, team_one_score, team_two_score):
-        gambled_matches = UserMatch.objects.filter(label=label, gambled=True)
-        for match in gambled_matches:
-            if match.team_one_score == team_one_score \
-            and match.team_two_score == team_two_score:
-                match.points = 3
-            elif (match.team_one_score > match.team_two_score and team_one_score > team_two_score) \
-            or (match.team_one_score < match.team_two_score and team_one_score < team_two_score):
-                match.points = 1
-            else:
-                match.points = 0
+    # @staticmethod
+    # def score_guess(label):
+    #     real_
 
-            match.save()
-            RealMatch.score_groups(match.user)
-
-        return
+    # @staticmethod
+    # def points_user_match(label, team_one_score, team_two_score):
+    #     # a = ''
+    #     # played_matches = UserMatch.objects.filter(gambled=True)
+    #     gambled_matches = UserMatch.objects.filter(gambled=True)
+    #     for match in played_matches:
+    #         for guess in gambled_matches:
+    #             if match.label == guess.label:
+    #                 print('real 1: ' + str(match.team_one))
+    #                 print('real 2: ' + str(match.team_two))
+    #                 print('real 1: ' + str(guess.team_one))
+    #                 print('real 2: ' + str(guess.team_two))
+    #                 score_guess()
+    #     for match in gambled_matches:
+    #         print(match.label)
+    #         if match.team_one_score == team_one_score \
+    #         and match.team_two_score == team_two_score:
+    #             match.points = 3
+    #         elif (match.team_one_score > match.team_two_score and team_one_score > team_two_score) \
+    #         or (match.team_one_score < match.team_two_score and team_one_score < team_two_score):
+    #             match.points = 1
+    #         else:
+    #             match.points = 0
+    #
+    #         print(str(a))
+    #         match.save()
+    #         RealMatch.score_groups(match.user)
+    #
+    #     return
 
     @staticmethod
     def save_groups():
@@ -113,24 +130,24 @@ class RealMatch(models.Model):
 
 
     def save(self, *args, **kwargs):
-        winner = None
-        if self.played == True:
-            RealMatch.points_user_match(self.label, self.team_one_score, self.team_two_score)
-            if self.phase == 'Groups':
-                RealMatch.save_groups()
+        # winner = None
+        # if self.played == True:
+        #     RealMatch.points_user_match(self.label, self.team_one_score, self.team_two_score)
+        #     if self.phase == 'Groups':
+        #         RealMatch.save_groups()
 
 
         super(RealMatch, self).save(*args, **kwargs)
 
 class UserMatch(models.Model):
-    PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Cuartos','Cuartos'),
+    PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Fourths','Cuartos'),
                     ('Semi','Semifinal'),('3y4','Puesto 3 y 4'), ('Finals','Final'))
 
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
 
-    label = models.CharField(max_length=50, null=False, blank= True)
+    label = models.CharField(max_length=50, null=False, blank= True, editable=False)
     date = models.DateField(null=True, blank=True)
     phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)
     group = models.CharField(max_length=50, choices=GROUP_CHOICES, null=True, blank=True)

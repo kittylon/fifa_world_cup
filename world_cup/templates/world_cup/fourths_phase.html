@@ -24,15 +24,15 @@ Hola {{ user.get_username }}
     <td>{{match.date}}</td>
     <td>{{match.team_one}} {{match.team_one.emoji}}</td>
     {% if match.gambled == False %}
-    <td><input type="number" name="{{match.label}}_1" value={{match.team_one_score}}></td>
-    <td><input type="number" name="{{match.label}}_2" value={{match.team_two_score}}></td>
+    <td><input type="number" name="{{match.label}}_real_1" value={{match.team_one_score}}></td>
+    <td><input type="number" name="{{match.label}}_real_2" value={{match.team_two_score}}></td>
     {% else %}
     <td>{{match.team_one_score}}</td>
     <td>{{match.team_two_score}}</td>
     {% endif %}
     <td>{{match.team_two.emoji}} {{match.team_two}}</td>
     <td><input type="number" name="{{match.label}}_penals_1" value={{match.penals_team_one}}></td>
-    <td><input type="number" name="{{match.label}}penals_2" value={{match.penals_team_two}}></td>
+    <td><input type="number" name="{{match.label}}_penals_2" value={{match.penals_team_two}}></td>
   </tr>
   {% endfor %}
   </tbody>
