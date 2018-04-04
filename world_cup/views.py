@@ -128,18 +128,6 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
         request.user.save()
         return redirect('third_fourth_summary')
 
-class SummarySemiView(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    template_name = 'world_cup/semi_summary.html'
-    winners = {'1_Semi': '', '2_Semi': ''}
-
-    def get(self, request, *args, **kwargs):
-        try:
-            object_list =  UserMatch.objects.filter(user=request.user, gambled=True, phase='Semi')
-        except:
-            raise Http404
-        return render(request, self.template_name, {'object_list': object_list} )
-
 class SemiView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     template_name = 'world_cup/semi_phase.html'
@@ -178,63 +166,37 @@ class SemiView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        match_id = ''
-        team_label = ''
-        score_one = ''
-        score_two = ''
-        for key, value in dict_gamble.items():
-            match_num, phase, team_num = key.split('_')
-            if team_num == '1':
-                score_one = value
-            elif team_num == '2':
-                score_two = value
-
-            if score_one != '' and score_two != '':
-                label = match_num +'_' + phase
-                GroupsView.save_gamble(user, label, score_one, score_two)
-                score_one = ''
-                score_two = ''
+        GroupsView.score_matches(user, dict_gamble)
         SemiView.create_final(user)
         SemiView.create_third_fourth(user)
         request.user.profile.semi_filled = True
         request.user.save()
-        return redirect('semi_summary')
-
-class SummaryFourthsView(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    template_name = 'world_cup/fourths_summary.html'
-    winners = {'1_Cuartos': '', '2_Cuartos': '', '3_Cuartos': '',
-                    '4_Cuartos': ''}
-
-    def get(self, request, *args, **kwargs):
-        try:
-            object_list =  UserMatch.objects.filter(user=request.user, gambled=True, phase='Cuartos')
-        except:
-            raise Http404
-        return render(request, self.template_name, {'object_list': object_list} )
+        return redirect('semi_phase')
 
 class FourthsView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     template_name = 'world_cup/fourths_phase.html'
-    winners = {'1_Cuartos': '', '2_Cuartos': '', '3_Cuartos': '',
-                    '4_Cuartos': ''}
+    winners = {'1_Fourths': '', '2_Fourths': '', '3_Fourths': '',
+                    '4_Fourths': ''}
     model = UserMatch
 
     def get(self, request, *args, **kwargs):
         try:
-            object_list =  UserMatch.objects.filter(user=request.user, phase='Cuartos')
+            object_list =  UserMatch.objects.filter(user=request.user, phase='Fourths')
         except:
             raise Http404
         return render(request, self.template_name, {'object_list': object_list} )
 
     @staticmethod
     def create_semi(user):
-        EightsView.create_match(user, '1_Semi', 'Semi', FourthsView.winners['1_Cuartos'], FourthsView.winners['2_Cuartos'], '2018-07-10')
-        EightsView.create_match(user, '2_Semi', 'Semi', FourthsView.winners['3_Cuartos'], FourthsView.winners['4_Cuartos'], '2018-07-11')
+        print('5')
+        EightsView.create_match(user, '1_Semi', 'Semi', FourthsView.winners['1_Fourths'], FourthsView.winners['2_Fourths'], '2018-07-10')
+        EightsView.create_match(user, '2_Semi', 'Semi', FourthsView.winners['3_Fourths'], FourthsView.winners['4_Fourths'], '2018-07-11')
         return
 
     @staticmethod
     def set_winner(user, label, user_team):
+        print(FourthsView.winners)
         FourthsView.winners[label] = user_team
         return
 
@@ -242,45 +204,18 @@ class FourthsView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        match_id = ''
-        team_label = ''
-        score_one = ''
-        score_two = ''
-        for key, value in dict_gamble.items():
-            match_num, phase, team_num = key.split('_')
-            if team_num == '1':
-                score_one = value
-            elif team_num == '2':
-                score_two = value
-
-            if score_one != '' and score_two != '':
-                label = match_num +'_' + phase
-                GroupsView.save_gamble(user, label, score_one, score_two)
-                score_one = ''
-                score_two = ''
+        GroupsView.score_matches(user, dict_gamble)
         FourthsView.create_semi(user)
         request.user.profile.fourths_filled = True
         request.user.save()
-        return redirect('fourths_summary')
-
-class SummaryEightsView(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    template_name = 'world_cup/eights_summary.html'
-    groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-
-    def get(self, request, *args, **kwargs):
-        try:
-            object_list =  UserMatch.objects.filter(user=request.user, gambled=True, phase='Eights')
-        except:
-            raise Http404
-        return render(request, self.template_name, {'object_list': object_list} )
+        return redirect('fourths_phase')
 
 class EightsView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     template_name = 'world_cup/eights_phase.html'
-    winners = {'1_Octavos': '', '2_Octavos': '', '3_Octavos': '',
-                    '4_Octavos': '', '5_Octavos': '', '6_Octavos': '',
-                    '7_Octavos': '', '8_Octavos': ''}
+    winners = {'1_Eights': '', '2_Eights': '', '3_Eights': '',
+                    '4_Eights': '', '5_Eights': '', '6_Eights': '',
+                    '7_Eights': '', '8_Eights': ''}
     model = UserMatch
 
     def get(self, request, *args, **kwargs):
@@ -292,10 +227,10 @@ class EightsView(LoginRequiredMixin, TemplateView):
 
     @staticmethod
     def create_fourths(user):
-        EightsView.create_match(user, '1_Fourths', 'Cuartos', EightsView.winners['1_Octavos'], EightsView.winners['2_Octavos'], '2018-07-06')
-        EightsView.create_match(user, '2_Fourths', 'Cuartos', EightsView.winners['3_Octavos'], EightsView.winners['4_Octavos'], '2018-07-06')
-        EightsView.create_match(user, '3_Fourths', 'Cuartos', EightsView.winners['5_Octavos'], EightsView.winners['6_Octavos'], '2018-07-07')
-        EightsView.create_match(user, '4_Fourths', 'Cuartos', EightsView.winners['7_Octavos'], EightsView.winners['8_Octavos'], '2018-07-07')
+        EightsView.create_match(user, '1_Fourths', 'Fourths', EightsView.winners['1_Eights'], EightsView.winners['2_Eights'], '2018-07-06')
+        EightsView.create_match(user, '2_Fourths', 'Fourths', EightsView.winners['3_Eights'], EightsView.winners['4_Eights'], '2018-07-06')
+        EightsView.create_match(user, '3_Fourths', 'Fourths', EightsView.winners['5_Eights'], EightsView.winners['6_Eights'], '2018-07-07')
+        EightsView.create_match(user, '4_Fourths', 'Fourths', EightsView.winners['7_Eights'], EightsView.winners['8_Eights'], '2018-07-07')
         return
 
     @staticmethod
@@ -310,50 +245,15 @@ class EightsView(LoginRequiredMixin, TemplateView):
         EightsView.winners[label] = user_team
         return
 
-    @staticmethod
-    def organize_scores(user, dict):
-        label = ''
-        score_one = ''
-        score_two = ''
-        penals_one = ''
-        penals_two = ''
-        for key, value in dict_gamble.items():
-            if key == value:
-                label = key[:-1]
-
-            match_label, type_score = key.split('|')
-
-            if len(type_score) > 2:
-                type, team = type_score.split('_')
-                if label == match_label and type == 'real' and team == '1':
-                    score_one = value
-                elif label == match_label and type == 'real' and team == '2':
-                    score_two = value
-                elif label == match_label and type == 'penals' and team == '1':
-                    penals_one = value
-                elif label == match_label and type == 'penals' and team == '2':
-                    penals_two = value
-                print(score_one, score_two, penals_one, penals_two)
-
-            if score_one != '' and score_two != '' and penals_one != '' and penals_two != '':
-                GroupsView.save_gamble(user, label, score_one, score_two, penals_one, penals_two)
-                score_one = ''
-                score_two = ''
-                penals_one = ''
-                penals_two = ''
-
-        return
-
     def post(self, request, *args, **kwargs):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        organize_scores(user, dict_gamble)
-
-        # EightsView.create_fourths(user)
-        # request.user.profile.eights_filled = True
-        # request.user.save()
-        # return redirect('eights_summary')
+        GroupsView.score_matches(user, dict_gamble)
+        EightsView.create_fourths(user)
+        request.user.profile.eights_filled = True
+        request.user.save()
+        return redirect('eights_phase')
 
     @staticmethod
     def create_eight(user, players):
@@ -377,8 +277,6 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         groups = {}
         if request.user.is_staff:
             return redirect('reypar_admin')
-        # elif request.user.profile.groups_filled == True:
-        #     return redirect('groups_summary')
         else:
             object_list = UserMatch.objects.filter(user=request.user, phase='Groups')
 
@@ -411,14 +309,17 @@ class GroupsView(LoginRequiredMixin, TemplateView):
 
     @staticmethod
     def check_phase(user, label, winner, loser):
-        if "Octavos" in label:
+        if "Eights" in label:
             EightsView.set_winner(user, label, winner)
-        elif "Cuartos" in label:
+        elif "Fourths" in label:
+            print(winner)
             FourthsView.set_winner(user, label, winner)
         elif "Semi" in label:
+            print(winner)
             SemiView.set_winner(user, label, winner)
             SemiView.set_loser(user, label, loser)
         elif "3y4" in label:
+            print(winner)
             TercerCuartoView.set_winner(user, label, winner)
             TercerCuartoView.set_loser(user, label, loser)
         elif "Finals" in label:
@@ -429,15 +330,19 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         return
 
     @staticmethod
-    def define_points(user, label, user_match, score_one, score_two):
+    def define_points(user, label, user_match):
+        print('3')
         points_one = 0
         points_two = 0
-        if user_match.team_one_score == user_match.team_two_score:
+        winner = ''
+        loser = ''
+        if int(user_match.team_one_score) + int(user_match.penals_team_one) == int(user_match.team_two_score) + int(user_match.penals_team_two):
             points_one = 1
             points_two = 1
             winner = None
             loser = None
-        elif user_match.team_one_score > user_match.team_two_score:
+            #Si es de grupos, todo bien, si no raise exception
+        elif int(user_match.team_one_score) + int(user_match.penals_team_one) > int(user_match.team_two_score) + int(user_match.penals_team_two):
             points_one = 3
             points_two = 0
             winner = user_match.team_one
@@ -448,13 +353,17 @@ class GroupsView(LoginRequiredMixin, TemplateView):
             winner = user_match.team_two
             loser = user_match.team_one
 
-        GroupsView.check_phase(user, label, winner, loser)
-        GroupsView.update_team(user, user_match.team_one, points_one, score_one, score_two)
-        GroupsView.update_team(user, user_match.team_two, points_two, score_two, score_one)
+        if "Groups" in label:
+            GroupsView.update_team(user, user_match.team_one, points_one, user_match.team_one_score, user_match.team_two_score)
+            GroupsView.update_team(user, user_match.team_two, points_two, user_match.team_two_score, user_match.team_one_score)
+        else:
+            print(label)
+            GroupsView.check_phase(user, label, winner, loser)
         return user_match.pk
 
     @staticmethod
     def save_gamble(user, label, score_one, score_two, penals_one, penals_two):
+        print('2')
         user_match = get_object_or_404(UserMatch, label=label, user=user)
         user_match.team_one_score = score_one
         user_match.team_two_score = score_two
@@ -467,11 +376,14 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         user_match.user = user
         user_match.gambled = True
         user_match.save()
-        GroupsView.define_points(user, label, user_match, score_one, score_two)
+
+        GroupsView.define_points(user, label, user_match)
+
         return user_match.pk
 
     @staticmethod
     def score_matches(user, dict_gamble):
+        print('1')
         label = ''
         score_one = ''
         score_two = ''
@@ -494,6 +406,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
                     penals_two = value
 
             if score_one != '' and score_two != '' and ((penals_one != '' and penals_two != '') or ('Groups' in label)):
+                print('1.5')
                 GroupsView.save_gamble(user, label, score_one, score_two, penals_one, penals_two)
                 score_one = ''
                 score_two = ''
@@ -511,25 +424,6 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         request.user.profile.groups_filled = True
         request.user.save()
         return redirect('groups_phase')
-#
-# class SummaryGroupsView(LoginRequiredMixin, TemplateView):
-#     login_url = '/login/'
-#     template_name = 'world_cup/groups_summary.html'
-#     groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-#
-#     def get(self, request, *args, **kwargs):
-#         try:
-#             object_list =  UserMatch.objects.filter(user=request.user, gambled=True, phase='Groups')
-#         except:
-#             raise Http404
-#         groups = {}
-#         for group in SummaryGroupsView.groups:
-#             x = filter(lambda match: match.group == group, object_list)
-#             # import pdb; pdb.set_trace()
-#             filter_list = list(filter(lambda match: match.group == group, object_list))
-#             groups[group] = filter_list
-#         # SummaryGroupsView.sort_groups(request.user)
-#         return render(request, self.template_name, {'groups': groups, 'object_list': object_list} )
 
 class ReyparAdminView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
