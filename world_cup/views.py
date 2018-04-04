@@ -6,19 +6,7 @@ from django.contrib.auth.models import User
 from world_cup.models import RealMatch, UserMatch, Team, UserTeam
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404
-
-class SummaryFinalsView(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    template_name = 'world_cup/finals_summary.html'
-    winner = {'1_Finals': ''}
-    loser = {'1_Finals': ''}
-
-    def get(self, request, *args, **kwargs):
-        try:
-            object_list =  UserMatch.objects.filter(user=request.user, gambled=True, phase='Finals')
-        except:
-            raise Http404
-        return render(request, self.template_name, {'object_list': object_list} )
+from django.contrib import messages
 
 class FinalsView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -48,37 +36,10 @@ class FinalsView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        match_id = ''
-        team_label = ''
-        score_one = ''
-        score_two = ''
-        for key, value in dict_gamble.items():
-            match_num, phase, team_num = key.split('_')
-            if team_num == '1':
-                score_one = value
-            elif team_num == '2':
-                score_two = value
-
-            if score_one != '' and score_two != '':
-                label = match_num +'_' + phase
-                GroupsView.save_gamble(user, label, score_one, score_two)
-                score_one = ''
-                score_two = ''
+        GroupsView.score_matches(user, dict_gamble)
         request.user.profile.final_filled = True
         request.user.save()
-        return redirect('finals_summary')
-
-class SummaryTercerCuartoView(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    template_name = 'world_cup/third_fourth_summary.html'
-    winners = {'1_Semi': '', '2_Semi': ''}
-
-    def get(self, request, *args, **kwargs):
-        try:
-            object_list =  UserMatch.objects.filter(user=request.user, gambled=True, phase='3y4')
-        except:
-            raise Http404
-        return render(request, self.template_name, {'object_list': object_list} )
+        return redirect('finals_phase')
 
 class TercerCuartoView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -108,25 +69,10 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        match_id = ''
-        team_label = ''
-        score_one = ''
-        score_two = ''
-        for key, value in dict_gamble.items():
-            match_num, phase, team_num = key.split('_')
-            if team_num == '1':
-                score_one = value
-            elif team_num == '2':
-                score_two = value
-
-            if score_one != '' and score_two != '':
-                label = match_num +'_' + phase
-                GroupsView.save_gamble(user, label, score_one, score_two)
-                score_one = ''
-                score_two = ''
+        GroupsView.score_matches(user, dict_gamble)
         request.user.profile.trd_fth_filled = True
         request.user.save()
-        return redirect('third_fourth_summary')
+        return redirect('third_fourth_phase')
 
 class SemiView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -189,14 +135,12 @@ class FourthsView(LoginRequiredMixin, TemplateView):
 
     @staticmethod
     def create_semi(user):
-        print('5')
         EightsView.create_match(user, '1_Semi', 'Semi', FourthsView.winners['1_Fourths'], FourthsView.winners['2_Fourths'], '2018-07-10')
         EightsView.create_match(user, '2_Semi', 'Semi', FourthsView.winners['3_Fourths'], FourthsView.winners['4_Fourths'], '2018-07-11')
         return
 
     @staticmethod
     def set_winner(user, label, user_team):
-        print(FourthsView.winners)
         FourthsView.winners[label] = user_team
         return
 
@@ -249,7 +193,7 @@ class EightsView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        GroupsView.score_matches(user, dict_gamble)
+        GroupsView.score_matches(user, dict_gamble, 'eights_phase')
         EightsView.create_fourths(user)
         request.user.profile.eights_filled = True
         request.user.save()
@@ -330,8 +274,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         return
 
     @staticmethod
-    def define_points(user, label, user_match):
-        print('3')
+    def define_points(user, label, user_match, view):
         points_one = 0
         points_two = 0
         winner = ''
@@ -341,6 +284,9 @@ class GroupsView(LoginRequiredMixin, TemplateView):
             points_two = 1
             winner = None
             loser = None
+            if "Groups" not in label:
+                messages.info(request, 'Escoge un ganador para el partido' + label[:1])
+                return HttpResponseRedirect('groups_phase')
             #Si es de grupos, todo bien, si no raise exception
         elif int(user_match.team_one_score) + int(user_match.penals_team_one) > int(user_match.team_two_score) + int(user_match.penals_team_two):
             points_one = 3
@@ -362,8 +308,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         return user_match.pk
 
     @staticmethod
-    def save_gamble(user, label, score_one, score_two, penals_one, penals_two):
-        print('2')
+    def save_gamble(user, label, score_one, score_two, penals_one, penals_two, view):
         user_match = get_object_or_404(UserMatch, label=label, user=user)
         user_match.team_one_score = score_one
         user_match.team_two_score = score_two
@@ -377,13 +322,12 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         user_match.gambled = True
         user_match.save()
 
-        GroupsView.define_points(user, label, user_match)
+        GroupsView.define_points(user, label, user_match, view)
 
         return user_match.pk
 
     @staticmethod
-    def score_matches(user, dict_gamble):
-        print('1')
+    def score_matches(user, dict_gamble, view):
         label = ''
         score_one = ''
         score_two = ''
@@ -406,8 +350,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
                     penals_two = value
 
             if score_one != '' and score_two != '' and ((penals_one != '' and penals_two != '') or ('Groups' in label)):
-                print('1.5')
-                GroupsView.save_gamble(user, label, score_one, score_two, penals_one, penals_two)
+                GroupsView.save_gamble(user, label, score_one, score_two, penals_one, penals_two, view)
                 score_one = ''
                 score_two = ''
                 penals_one = ''
@@ -419,7 +362,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        GroupsView.score_matches(user, dict_gamble)
+        GroupsView.score_matches(user, dict_gamble, 'groups_phase')
         GroupsView.sort_groups(user)
         request.user.profile.groups_filled = True
         request.user.save()
