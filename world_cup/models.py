@@ -169,6 +169,16 @@ class UserMatch(models.Model):
     penals_team_two = models.PositiveIntegerField(default=0,  blank=True, null=True)
     gambled = models.BooleanField(default=False)
     points = models.PositiveIntegerField(default=0)
+    winner = models.ForeignKey(
+                'world_cup.UserTeam',
+                on_delete=models.SET_NULL,
+                null=True,
+                related_name='user_winner')
+    loser = models.ForeignKey(
+                'world_cup.UserTeam',
+                on_delete=models.SET_NULL,
+                null=True,
+                related_name='user_loser')
 
     def __str__(self):
         return self.label + "_" + str(self.user)
