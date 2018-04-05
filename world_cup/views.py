@@ -11,8 +11,8 @@ from django.contrib import messages
 class FinalsView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     template_name = 'world_cup/finals_phase.html'
-    winner = {'1_Finals': ''}
-    loser = {'1_Finals': ''}
+    winners = {'1_Finals': ''}
+    losers = {'1_Finals': ''}
     model = UserMatch
 
     def get(self, request, *args, **kwargs):
@@ -23,29 +23,38 @@ class FinalsView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {'object_list': object_list} )
 
     @staticmethod
-    def set_loser(user, label, user_team):
-        FinalsView.loser[label] = user_team
+    def fill_winners(user):
+        user_matches = UserMatch.objects.filter(user=user, gambled=True, phase='Finals')
+        for match in user_matches:
+            for key, value in FinalsView.winners.items():
+                if match.label == key:
+                    FinalsView.winners[key] = match.winner
         return
 
     @staticmethod
-    def set_winner(user, label, user_team):
-        FinalsView.winner[label] = user_team
+    def fill_losers(user):
+        user_matches = UserMatch.objects.filter(user=user, gambled=True, phase='Finals')
+        for match in user_matches:
+            for key, value in FinalsView.losers.items():
+                if match.label == key:
+                    FinalsView.losers[key] = match.loser
         return
 
     def post(self, request, *args, **kwargs):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
+        TercerCuartoView.fill_winners(user)
+        TercerCuartoView.fill_losers(user)
         GroupsView.score_matches(user, dict_gamble)
-        request.user.profile.final_filled = True
-        request.user.save()
+        TercerCuartoView.check_winners(user)
         return redirect('finals_phase')
 
 class TercerCuartoView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     template_name = 'world_cup/third_fourth_phase.html'
-    winner = {'1_3y4': ''}
-    loser = {'1_3y4': ''}
+    winners = {'1_3y4': ''}
+    losers = {'1_3y4': ''}
     model = UserMatch
 
     def get(self, request, *args, **kwargs):
@@ -56,22 +65,41 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {'object_list': object_list} )
 
     @staticmethod
-    def set_loser(user, label, user_team):
-        TercerCuartoView.loser[label] = user_team
+    def check_winners(user):
+        counter = 0
+        for key, value in TercerCuartoView.winners.items():
+            if len(str(value)) > 2:
+                counter += 1
+        if counter == 1:
+            user.profile.trd_fth_filled = True
+            user.save()
         return
 
     @staticmethod
-    def set_winner(user, label, user_team):
-        TercerCuartoView.winner[label] = user_team
+    def fill_winners(user):
+        user_matches = UserMatch.objects.filter(user=user, gambled=True, phase='3y4')
+        for match in user_matches:
+            for key, value in TercerCuartoView.winners.items():
+                if match.label == key:
+                    TercerCuartoView.winners[key] = match.winner
+        return
+
+    @staticmethod
+    def fill_losers(user):
+        user_matches = UserMatch.objects.filter(user=user, gambled=True, phase='3y4')
+        for match in user_matches:
+            for key, value in TercerCuartoView.losers.items():
+                if match.label == key:
+                    TercerCuartoView.losers[key] = match.loser
         return
 
     def post(self, request, *args, **kwargs):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
+        FinalsView.fill_winners(user)
+        FinalsView.fill_losers(user)
         GroupsView.score_matches(user, dict_gamble)
-        request.user.profile.trd_fth_filled = True
-        request.user.save()
         return redirect('third_fourth_phase')
 
 class SemiView(LoginRequiredMixin, TemplateView):
@@ -99,24 +127,46 @@ class SemiView(LoginRequiredMixin, TemplateView):
         return
 
     @staticmethod
-    def set_loser(user, label, user_team):
-        SemiView.losers[label] = user_team
+    def check_winners(user):
+        counter = 0
+        for key, value in SemiView.winners.items():
+            if len(str(value)) > 2:
+                counter += 1
+        if counter == 2:
+            SemiView.create_third_fourth(user)
+            SemiView.create_final(user)
+            user.profile.semi_filled = True
+            user.save()
         return
 
     @staticmethod
-    def set_winner(user, label, user_team):
-        SemiView.winners[label] = user_team
+    def fill_winners(user):
+        user_matches = UserMatch.objects.filter(user=user, gambled=True, phase='Semi')
+        for match in user_matches:
+            for key, value in SemiView.winners.items():
+                if match.label == key:
+                    SemiView.winners[key] = match.winner
+
+        return
+
+    @staticmethod
+    def fill_losers(user):
+        user_matches = UserMatch.objects.filter(user=user, gambled=True, phase='Semi')
+        for match in user_matches:
+            for key, value in SemiView.losers.items():
+                if match.label == key:
+                    SemiView.losers[key] = match.loser
+
         return
 
     def post(self, request, *args, **kwargs):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
+        SemiView.fill_winners(user)
+        SemiView.fill_losers(user)
         GroupsView.score_matches(user, dict_gamble)
-        SemiView.create_final(user)
-        SemiView.create_third_fourth(user)
-        request.user.profile.semi_filled = True
-        request.user.save()
+        SemiView.check_winners(user)
         return redirect('semi_phase')
 
 class FourthsView(LoginRequiredMixin, TemplateView):
@@ -168,10 +218,6 @@ class FourthsView(LoginRequiredMixin, TemplateView):
         FourthsView.fill_winners(user)
         GroupsView.score_matches(user, dict_gamble)
         FourthsView.check_winners(user)
-        # GroupsView.score_matches(user, dict_gamble)
-        # FourthsView.create_semi(user)
-        # request.user.profile.fourths_filled = True
-        # request.user.save()
         return redirect('fourths_phase')
 
 class EightsView(LoginRequiredMixin, TemplateView):
@@ -301,10 +347,10 @@ class GroupsView(LoginRequiredMixin, TemplateView):
             SemiView.fill_losers(user)
         elif "3y4" in label:
             TercerCuartoView.fill_winners(user)
-            TercerCuartoView.set_loser(user)
+            TercerCuartoView.fill_losers(user)
         elif "Finals" in label:
             TercerCuartoView.fill_winners(user)
-            TercerCuartoView.set_loser(user)
+            TercerCuartoView.fill_losers(user)
         else:
             print("etapa grupos, no hay orden")
         return
