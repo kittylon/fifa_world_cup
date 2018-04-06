@@ -63,14 +63,16 @@ class RealMatch(models.Model):
     penals_team_two = models.PositiveIntegerField(default=0,  blank=True, null=True)
     played = models.BooleanField(default=False)
     winner = models.ForeignKey(
-                'world_cup.UserTeam',
+                'world_cup.Team',
                 on_delete=models.SET_NULL,
                 null=True,
+                blank=True,
                 related_name='real_winner')
     loser = models.ForeignKey(
-                'world_cup.UserTeam',
+                'world_cup.Team',
                 on_delete=models.SET_NULL,
                 null=True,
+                blank=True,
                 related_name='real_loser')
 
     def __str__(self):
@@ -80,24 +82,44 @@ class RealMatch(models.Model):
         verbose_name = 'RealMatch'
         verbose_name_plural = 'RealMatches'
 
-    # @staticmethod
-    # def points_user_match(realmatch):
-    #     user_match = UserMatch.objects.get(gambled=True, label=realmatch.label)
-    #
-    #     if realmatch.team_one_score == user_match.team_one_score and realmatch.team_two_score == user_match.team_two_score and realmatch.penals_team_one == user_match.penals_team_one and realmatch.penals_team_two == user_match.penals_team_two:
-    #         print('3 puntos! :D')
-    #     elif int(user_match.team_one_score) + int(user_match.penals_team_one) > int(user_match.team_two_score) + int(user_match.penals_team_two):
-    #
-    #
-    #     return
+    @staticmethod
+    def update_team(team, points, goals_favor, goals_against):
+        team.points += int(points)
+        team.goals_favor += int(goals_favor)
+        team.goals_against += int(goals_against)
+        team.save()
+        return
+
+    @staticmethod
+    def define_points(real_match):
+        points_one = 0
+        points_two = 0
+        winner = ''
+        loser = ''
+        if int(real_match.team_one_score) + int(real_match.penals_team_one) == int(real_match.team_two_score) + int(real_match.penals_team_two):
+            points_one = 1
+            points_two = 1
+            if "Groups" not in realmatch.label:
+                realmatch.gambled = False
+        elif int(real_match.team_one_score) + int(real_match.penals_team_one) > int(real_match.team_two_score) + int(real_match.penals_team_two):
+            points_one = 3
+            points_two = 0
+            real_match.winner = real_match.team_one
+            real_match.loser = realmatch.team_two
+        else:
+            points_one = 0
+            points_two = 3
+            real_match.winner = real_match.team_two
+            real_match.loser = realmatch.team_one
+
+        if "Groups" in label:
+            RealMatch.update_team(real_match.team_one, points_one, real_match.team_one_score, real_match.team_two_score)
+            RealMatch.update_team(real_match.team_two, points_two, real_match.team_two_score, real_match.team_one_score)
+        return
 
     def save(self, *args, **kwargs):
-        # if self.played == True:
-        #     RealMatch.points_user_match(self)
-        #     # if self.phase == 'Groups':
-        #     #     RealMatch.save_groups()
-        #
-
+        if self.played == True:
+            RealMatch.define_points(self)
         super(RealMatch, self).save(*args, **kwargs)
 
 class UserMatch(models.Model):
