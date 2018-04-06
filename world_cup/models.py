@@ -99,27 +99,29 @@ class RealMatch(models.Model):
         if int(real_match.team_one_score) + int(real_match.penals_team_one) == int(real_match.team_two_score) + int(real_match.penals_team_two):
             points_one = 1
             points_two = 1
-            if "Groups" not in realmatch.label:
-                realmatch.gambled = False
+            if "Groups" not in real_match.label:
+                real_match.gambled = False
         elif int(real_match.team_one_score) + int(real_match.penals_team_one) > int(real_match.team_two_score) + int(real_match.penals_team_two):
             points_one = 3
             points_two = 0
             real_match.winner = real_match.team_one
-            real_match.loser = realmatch.team_two
+            real_match.loser = real_match.team_two
         else:
             points_one = 0
             points_two = 3
             real_match.winner = real_match.team_two
-            real_match.loser = realmatch.team_one
+            real_match.loser = real_match.team_one
 
-        if "Groups" in label:
-            RealMatch.update_team(real_match.team_one, points_one, real_match.team_one_score, real_match.team_two_score)
-            RealMatch.update_team(real_match.team_two, points_two, real_match.team_two_score, real_match.team_one_score)
+        # if "Groups" in real_match.label:
+            # RealMatch.update_team(real_match.team_one, points_one, real_match.team_one_score, real_match.team_two_score)
+            # RealMatch.update_team(real_match.team_two, points_two, real_match.team_two_score, real_match.team_one_score)
         return
 
     def save(self, *args, **kwargs):
         if self.played == True:
             RealMatch.define_points(self)
+            print(self.winner)
+            print(self.loser)
         super(RealMatch, self).save(*args, **kwargs)
 
 class UserMatch(models.Model):
