@@ -62,6 +62,16 @@ class RealMatch(models.Model):
     penals_team_one = models.PositiveIntegerField(default=0, blank=True, null=True)
     penals_team_two = models.PositiveIntegerField(default=0,  blank=True, null=True)
     played = models.BooleanField(default=False)
+    winner = models.ForeignKey(
+                'world_cup.UserTeam',
+                on_delete=models.SET_NULL,
+                null=True,
+                related_name='real_winner')
+    loser = models.ForeignKey(
+                'world_cup.UserTeam',
+                on_delete=models.SET_NULL,
+                null=True,
+                related_name='real_loser')
 
     def __str__(self):
         return self.label + '_' + str(self.team_one) + '_vs._' + str(self.team_two)
@@ -70,72 +80,23 @@ class RealMatch(models.Model):
         verbose_name = 'RealMatch'
         verbose_name_plural = 'RealMatches'
 
-    @staticmethod
-    def score_groups(user):
-        groups_score = 0
-        played_matches = UserMatch.objects.filter(user=user, gambled=True, phase='Groups')
-        for match in played_matches:
-            groups_score += match.points
-
-        print(groups_score)
-        # user.profile.groups_points = groups_score
-        # user.save()
-        print(str(user.first_name) + " " + str(user.profile.eights_points))
-        return
-
     # @staticmethod
-    # def score_guess(label):
-    #     real_
-
-    # @staticmethod
-    # def points_user_match(label, team_one_score, team_two_score):
-    #     # a = ''
-    #     # played_matches = UserMatch.objects.filter(gambled=True)
-    #     gambled_matches = UserMatch.objects.filter(gambled=True)
-    #     for match in played_matches:
-    #         for guess in gambled_matches:
-    #             if match.label == guess.label:
-    #                 print('real 1: ' + str(match.team_one))
-    #                 print('real 2: ' + str(match.team_two))
-    #                 print('real 1: ' + str(guess.team_one))
-    #                 print('real 2: ' + str(guess.team_two))
-    #                 score_guess()
-    #     for match in gambled_matches:
-    #         print(match.label)
-    #         if match.team_one_score == team_one_score \
-    #         and match.team_two_score == team_two_score:
-    #             match.points = 3
-    #         elif (match.team_one_score > match.team_two_score and team_one_score > team_two_score) \
-    #         or (match.team_one_score < match.team_two_score and team_one_score < team_two_score):
-    #             match.points = 1
-    #         else:
-    #             match.points = 0
+    # def points_user_match(realmatch):
+    #     user_match = UserMatch.objects.get(gambled=True, label=realmatch.label)
     #
-    #         print(str(a))
-    #         match.save()
-    #         RealMatch.score_groups(match.user)
+    #     if realmatch.team_one_score == user_match.team_one_score and realmatch.team_two_score == user_match.team_two_score and realmatch.penals_team_one == user_match.penals_team_one and realmatch.penals_team_two == user_match.penals_team_two:
+    #         print('3 puntos! :D')
+    #     elif int(user_match.team_one_score) + int(user_match.penals_team_one) > int(user_match.team_two_score) + int(user_match.penals_team_two):
+    #
     #
     #     return
 
-    @staticmethod
-    def save_groups():
-        played_groups = RealMatch.objects.filter(phase='Groups', played=True).count()
-        groups_matches = RealMatch.objects.filter(phase='Groups').count()
-
-        if groups_matches == played_groups:
-            print("create groups")
-        else:
-            print("Not allowed to create groups yet")
-        return
-
-
     def save(self, *args, **kwargs):
-        # winner = None
         # if self.played == True:
-        #     RealMatch.points_user_match(self.label, self.team_one_score, self.team_two_score)
-        #     if self.phase == 'Groups':
-        #         RealMatch.save_groups()
-
+        #     RealMatch.points_user_match(self)
+        #     # if self.phase == 'Groups':
+        #     #     RealMatch.save_groups()
+        #
 
         super(RealMatch, self).save(*args, **kwargs)
 
