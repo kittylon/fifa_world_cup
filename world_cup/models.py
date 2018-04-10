@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
+from django.db.models import Q
 
 # Create your models here.
 class Team(models.Model):
@@ -83,46 +84,52 @@ class RealMatch(models.Model):
         verbose_name_plural = 'RealMatches'
 
     @staticmethod
-    def update_team(team, points, goals_favor, goals_against):
-        team.points += int(points)
-        team.goals_favor += int(goals_favor)
-        team.goals_against += int(goals_against)
+    def save_team_stats(team, points, goals_favor, goals_against):
+        team.points = points
+        team.goals_favor = goals_favor
+        team.goals_against = goals_against
         team.save()
         return
 
     @staticmethod
-    def define_points(real_match):
-        points_one = 0
-        points_two = 0
-        winner = ''
-        loser = ''
-        if int(real_match.team_one_score) + int(real_match.penals_team_one) == int(real_match.team_two_score) + int(real_match.penals_team_two):
-            points_one = 1
-            points_two = 1
-            if "Groups" not in real_match.label:
-                real_match.gambled = False
-        elif int(real_match.team_one_score) + int(real_match.penals_team_one) > int(real_match.team_two_score) + int(real_match.penals_team_two):
-            points_one = 3
-            points_two = 0
-            real_match.winner = real_match.team_one
-            real_match.loser = real_match.team_two
-        else:
-            points_one = 0
-            points_two = 3
-            real_match.winner = real_match.team_two
-            real_match.loser = real_match.team_one
-
-        # if "Groups" in real_match.label:
-            # RealMatch.update_team(real_match.team_one, points_one, real_match.team_one_score, real_match.team_two_score)
-            # RealMatch.update_team(real_match.team_two, points_two, real_match.team_two_score, real_match.team_one_score)
+    def set_team_stats(team):
+        points = 0
+        goals_favor = 0
+        goals_against = 0
+        matches = RealMatch.objects.filter(Q(team_one=team) | Q(team_two=team))
+        for match in matches:
+            if(match.winner == None):
+                points += 1
+            elif(match.winner == team):
+                points += 3
+            if (match.team_one == team):
+                goals_favor += match.team_one_score
+                goals_against += match.team_two_score
+            else:
+                goals_favor += match.team_two_score
+                goals_against += match.team_one_score
+        RealMatch.save_team_stats(team, points, goals_favor, goals_against)
         return
 
-    def save(self, *args, **kwargs):
-        if self.played == True:
-            RealMatch.define_points(self)
-            print(self.winner)
-            print(self.loser)
-        super(RealMatch, self).save(*args, **kwargs)
+@receiver(post_save, sender=RealMatch)
+def save_profile(sender, instance, **kwargs):
+    RealMatch.set_team_stats(instance.team_one)
+    RealMatch.set_team_stats(instance.team_two)
+    return
+
+@receiver(pre_save, sender=RealMatch)
+def set_winner(sender, instance, **kwargs):
+    if int(instance.team_one_score) + int(instance.penals_team_one) == int(instance.team_two_score) + int(instance.penals_team_two):
+        instance.winner = None
+        instance.loser = None
+        if "Groups" not in instance.label:
+            instance.played = False
+    elif int(instance.team_one_score) + int(instance.penals_team_one) > int(instance.team_two_score) + int(instance.penals_team_two):
+        instance.winner = instance.team_one
+        instance.loser = instance.team_two
+    else:
+        instance.winner = instance.team_two
+        instance.loser = instance.team_one
 
 class UserMatch(models.Model):
     PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Fourths','Cuartos'),

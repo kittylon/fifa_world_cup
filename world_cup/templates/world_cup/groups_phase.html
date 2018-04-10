@@ -24,8 +24,8 @@
     <td>{{match.date}}</td>
     <td>{{match.team_one}} {{match.team_one.emoji}}</td>
     {% if match.gambled == False  or match.played == False %}
-    <td class='col-xs-1'><input type="number" class="form-control" name="{{match.label}}|real_1" value={{match.team_one_score}} required></td>
-    <td class='col-xs-1'><input type="number" class="form-control" name="{{match.label}}|real_2" value={{match.team_two_score}} required></td>
+    <td class='col-xs-1'><input type="number" min="0" class="form-control" name="{{match.label}}|real_1" value={{match.team_one_score}} required></td>
+    <td class='col-xs-1'><input type="number" min="0" class="form-control" name="{{match.label}}|real_2" value={{match.team_two_score}} required></td>
     {% else %}
     <td>{{match.team_one_score}}</td>
     <td>{{match.team_two_score}}</td>
