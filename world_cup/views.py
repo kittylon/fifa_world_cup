@@ -289,10 +289,10 @@ class GroupsView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         groups = {}
-        if request.user.is_staff:
-            return redirect('reypar_admin')
-        else:
-            object_list = UserMatch.objects.filter(user=request.user, phase='Groups')
+        # if request.user.is_staff:
+        #     return redirect('reypar_admin')
+        # else:
+        object_list = UserMatch.objects.filter(user=request.user, phase='Groups')
 
         for group in GroupsView.groups:
             x = filter(lambda match: match.group == group, object_list)

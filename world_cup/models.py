@@ -15,7 +15,16 @@ class Team(models.Model):
     points = models.PositiveIntegerField(default=0)
     goals_favor = models.PositiveIntegerField(default=0)
     goals_against = models.PositiveIntegerField(default=0)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     emoji = models.CharField(max_length=255, default=' ')
+
+    # def __init__(self, *args, **kwargs):
+    #     try:
+    #         user = User.objects.get(username="polla_admin")
+    #         kwargs['initial']['creator'] = user
+    #     except MyModel.DoesNotExist:
+    #         pass
+    #     super(MyModelForm, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return self.country
@@ -43,6 +52,7 @@ class RealMatch(models.Model):
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     label = models.CharField(max_length=50, null=False, blank= True, editable=True)
     date = models.DateField(null=True, blank=True)
     phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)
@@ -96,7 +106,7 @@ class RealMatch(models.Model):
         points = 0
         goals_favor = 0
         goals_against = 0
-        matches = RealMatch.objects.filter(Q(team_one=team) | Q(team_two=team))
+        matches = RealMatch.objects.filter(Q(team_one=team, played=True) | Q(team_two=team, played=True))
         for match in matches:
             if(match.winner == None):
                 points += 1
@@ -111,10 +121,24 @@ class RealMatch(models.Model):
         RealMatch.save_team_stats(team, points, goals_favor, goals_against)
         return
 
+    @staticmethod
+    def check_phase(phase):
+        matches = RealMatch.objects.filter(played=True, phase=phase).count()
+        all = RealMatch.objects.filter(phase=phase).count()
+        if matches == all:
+            user.profile.groups_filled = True
+            print('Fase terminada')
+        else:
+            user.profile.groups_filled = False
+            print('Fase no terminada')
+        return
+
 @receiver(post_save, sender=RealMatch)
-def save_profile(sender, instance, **kwargs):
-    RealMatch.set_team_stats(instance.team_one)
-    RealMatch.set_team_stats(instance.team_two)
+def set_team_points(sender, instance, **kwargs):
+    if instance.phase == 'Groups' and instance.played == True:
+        RealMatch.set_team_stats(instance.team_one)
+        RealMatch.set_team_stats(instance.team_two)
+    RealMatch.check_phase(instance.phase)
     return
 
 @receiver(pre_save, sender=RealMatch)
@@ -124,6 +148,10 @@ def set_winner(sender, instance, **kwargs):
         instance.loser = None
         if "Groups" not in instance.label:
             instance.played = False
+            instance.team_one_score = 0
+            instance.team_two_score = 0
+            instance.penals_team_one = 0
+            instance.penals_team_two = 0
     elif int(instance.team_one_score) + int(instance.penals_team_one) > int(instance.team_two_score) + int(instance.penals_team_two):
         instance.winner = instance.team_one
         instance.loser = instance.team_two

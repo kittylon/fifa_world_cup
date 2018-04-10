@@ -40,37 +40,6 @@ def register_user(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            real_matches = RealMatch.objects.all()
-            all_teams = Team.objects.all()
-            for team in all_teams:
-                new_user_team = UserTeam(country = team.country,
-                                        group = team.group,
-                                        user=user,
-                                        emoji=team.emoji)
-                new_user_team.save()
-            user_teams = UserTeam.objects.filter(user=user)
-            team_one_user = ''
-            team_two_user = ''
-            for real_match in real_matches:
-
-                    for team in user_teams:
-                        if real_match.team_one.country == team.country:
-                            team_one_user = team
-
-                        elif real_match.team_two.country == team.country:
-                            team_two_user = team
-
-                        if team_one_user != '' and team_two_user != '':
-                            new_user_match = UserMatch(label=real_match.label,
-                                                        date=real_match.date,
-                                                        phase=real_match.phase,
-                                                        group=real_match.group,
-                                                        team_one=team_one_user,
-                                                        team_two=team_two_user,
-                                                        user=user)
-                            new_user_match.save()
-                            team_one_user = ''
-                            team_two_user = ''
             return redirect('groups_phase')
 
     else:

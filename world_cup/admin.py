@@ -1,18 +1,30 @@
 from django.contrib import admin
 from .models import Team, RealMatch, UserMatch, UserTeam
+from clients.models import Profile
 
 # Register your models here.
 def set_team_points(team):
     print(team)
     return
 
-def give_real_points(modeladmin, request, queryset):
-    for match in queryset:
-        if match.played == True and match.phase == 'Groups':
-            set_team_points(match.winner)
+def check_groups(modeladmin, request, queryset):
+        matches = RealMatch.objects.filter(played=True, phase='Groups').count()
+        all = RealMatch.objects.filter(phase='Groups').count()
+        profile = Profile.objects.get(pk=1)
+        print(profile.user)
+        if matches == all:
+            if user.profile.groups_filled == True:
+                print('Fase terminada')
         else:
-            print("No se calcula puntajes")
-give_real_points.short_description = 'show match'
+            # if user.profile.groups_filled == True:
+            print('Fase no terminada')
+check_groups.short_description = 'check groups'
+    # for match in queryset:
+    #     if match.played == True and match.phase == 'Groups':
+    #         set_team_points(match.winner)
+    #     else:
+    #         print("No se calcula puntajes")
+
 
 class RealMatchAdmin(admin.ModelAdmin):
     list_display = ['label', 'date', 'phase', 'group', 'team_one', 'team_two',
@@ -20,7 +32,7 @@ class RealMatchAdmin(admin.ModelAdmin):
                     'penals_team_two','played']
     readonly_fields = ('label', 'date', 'phase', 'group', 'team_one', 'team_two',
                         'winner', 'loser')
-    actions = [give_real_points]
+    actions = [check_groups]
 
 # Register your models here.
 admin.site.register(Team)
