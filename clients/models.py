@@ -51,7 +51,6 @@ class Profile(models.Model):
         real_matches = RealMatch.objects.all()
         all_teams = Team.objects.all()
         real = user.is_superuser
-        print(real)
         for team in all_teams:
             new_user_team = UserTeam(real=real,
                                     country = team.country,

@@ -7,8 +7,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.min.css">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    {% block js %}
-    {% endblock %}
+    <script src="/static/js/match.js"></script>
   </head>
   <body>
       <div class="demo-headline">
@@ -20,7 +19,9 @@
             <small>FIFA 2018⚽</small>
           </h2>
         <section>
+          {% if user.profile.groups_filled == True %}
           <span>Ir a: </span>
+          {% endif %}
           {% include 'world_cup/button_group.html' %}
         </section>
 

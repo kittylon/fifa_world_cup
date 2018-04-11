@@ -1,11 +1,13 @@
 {% extends 'world_cup/base.html' %}
 {% block content %}
 
-Hola {{ user.get_username }}
 <br>
 
 <form class="" action="/fase_semifinal/" method="post">
 {% csrf_token %}
+{% if user.profile.fourths_filled == False %}
+Llena la fase de cuartos primero para llenar la fase semifinal😯
+{% else %}
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -51,6 +53,7 @@ Hola {{ user.get_username }}
 <div class="col-xs-12 text-center">
   <a href='/fase_tercer_cuarto/' class='btn btn-lg btn-primary'>Ir a 3er y 4to puesto </a>
 </div>
+{% endif %}
 {% endif %}
 </form>
 

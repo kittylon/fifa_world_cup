@@ -1,6 +1,5 @@
 {% extends 'world_cup/base.html' %}
 {% block js %}
-<script src="/static/js/match.js"></script>
 {% endblock %}
 {% block content %}
 <br>
@@ -17,7 +16,9 @@
       <th>Equipo 1</th>
       <th>Goles</th>
       <th>Goles</th>
+      {% if user.profile.groups_filled == False %}
       <th> </th>
+      {% endif %}
       <th>Equipo 2</th>
     </tr>
   </thead>

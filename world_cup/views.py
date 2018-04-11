@@ -19,9 +19,6 @@ class SaveMatchView(LoginRequiredMixin, TemplateView):
         team.goals_favor = goals_favor
         team.goals_against = goals_against
         team.save()
-        print(team.points)
-        print(team.goals_favor)
-        print(team.goals_against)
         return
 
     @staticmethod
@@ -279,7 +276,6 @@ class FourthsView(LoginRequiredMixin, TemplateView):
             for key, value in FourthsView.winners.items():
                 if match.label == key:
                     FourthsView.winners[key] = match.winner
-
         return
 
     def post(self, request, *args, **kwargs):
@@ -310,6 +306,7 @@ class EightsView(LoginRequiredMixin, TemplateView):
     def check_winners(user):
         counter = 0
         for key, value in EightsView.winners.items():
+            print(str(key) + str(value))
             if len(str(value)) > 2:
                 counter += 1
         if counter == 8:
@@ -340,7 +337,6 @@ class EightsView(LoginRequiredMixin, TemplateView):
             for key, value in EightsView.winners.items():
                 if match.label == key:
                     EightsView.winners[key] = match.winner
-
         return
 
     def post(self, request, *args, **kwargs):
@@ -360,9 +356,6 @@ class GroupsView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         groups = {}
-        # if request.user.is_staff:
-        #     return redirect('reypar_admin')
-        # else:
         object_list = UserMatch.objects.filter(user=request.user, phase='Groups')
 
         for group in GroupsView.groups:
@@ -398,14 +391,6 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         return
 
     @staticmethod
-    def update_team(user, team, points, goals_favor, goals_against):
-        team.points += int(points)
-        team.goals_favor += int(goals_favor)
-        team.goals_against += int(goals_against)
-        team.save()
-        return team.pk
-
-    @staticmethod
     def check_phase(user, label, winner, loser):
         if "Eights" in label:
             EightsView.fill_winners(user)
@@ -431,25 +416,19 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         winner = ''
         loser = ''
         if int(user_match.team_one_score) + int(user_match.penals_team_one) == int(user_match.team_two_score) + int(user_match.penals_team_two):
-            points_one = 1
-            points_two = 1
             if "Groups" not in label:
                 user_match.gambled = False
         elif int(user_match.team_one_score) + int(user_match.penals_team_one) > int(user_match.team_two_score) + int(user_match.penals_team_two):
-            points_one = 3
-            points_two = 0
             user_match.winner = user_match.team_one
             user_match.loser = user_match.team_two
         else:
-            points_one = 0
-            points_two = 3
             user_match.winner = user_match.team_two
             user_match.loser = user_match.team_one
 
         user_match.save()
         if "Groups" in label:
-            GroupsView.update_team(user, user_match.team_one, points_one, user_match.team_one_score, user_match.team_two_score)
-            GroupsView.update_team(user, user_match.team_two, points_two, user_match.team_two_score, user_match.team_one_score)
+            SaveMatchView.set_team_stats(user_match.team_one, user)
+            SaveMatchView.set_team_stats(user_match.team_two, user)
         else:
             GroupsView.check_phase(user, label, winner, loser)
         return user_match.pk
@@ -491,12 +470,10 @@ class GroupsView(LoginRequiredMixin, TemplateView):
 
             if score_one != '' and score_two != '':
                 if "Groups" in label or score_one != score_two:
-                    print('No hay Penales')
                     GroupsView.save_gamble(user, label, score_one, score_two)
                     score_one = ''
                     score_two = ''
                 elif "Groups" not in label and score_one == score_two and penals_one != '' and penals_two != '':
-                    print('Hay penales')
                     GroupsView.save_gamble(user, label, score_one, score_two, penals_one, penals_two)
                     score_one = ''
                     score_two = ''
@@ -509,9 +486,9 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        # GroupsView.score_matches(user, dict_gamble)
+        GroupsView.score_matches(user, dict_gamble)
         GroupsView.sort_groups(user)
-        user.groups_filled = True
+        user.profile.groups_filled = True
         user.save()
         return redirect('groups_phase')
 

@@ -1,11 +1,13 @@
 {% extends 'world_cup/base.html' %}
 {% block content %}
 
-Hola {{ user.get_username }}
 <br>
 
 <form class="" action="/fase_final/" method="post">
 {% csrf_token %}
+{% if user.profile.trd_fth_filled == False %}
+Llena la fase de tercer y cuarto puesto primero para llenar la fase final😯
+{% else %}
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -47,6 +49,7 @@ Hola {{ user.get_username }}
 <div class="col-xs-12 text-center">
   <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar resultados">
 </div>
+{% endif %}
 {% endif %}
 </form>
 
