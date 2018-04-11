@@ -6,7 +6,9 @@
     <title>{{title|default:"Mundial Reypar"}}</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.min.css">
-
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    {% block js %}
+    {% endblock %}
   </head>
   <body>
       <div class="demo-headline">
@@ -21,12 +23,10 @@
           <span>Ir a: </span>
           {% include 'world_cup/button_group.html' %}
         </section>
-          
+
         {% block content %}
         {% endblock %}
       </div>
-    {% block javascript %}
-    {% endblock %}
     <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

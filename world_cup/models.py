@@ -2,29 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
-from django.db.models import Q
 
 # Create your models here.
 class Team(models.Model):
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
-
     country = models.CharField(max_length=255)
     group = models.CharField(max_length=50, choices=GROUP_CHOICES, null=False)
     points = models.PositiveIntegerField(default=0)
     goals_favor = models.PositiveIntegerField(default=0)
     goals_against = models.PositiveIntegerField(default=0)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     emoji = models.CharField(max_length=255, default=' ')
-
-    # def __init__(self, *args, **kwargs):
-    #     try:
-    #         user = User.objects.get(username="polla_admin")
-    #         kwargs['initial']['creator'] = user
-    #     except MyModel.DoesNotExist:
-    #         pass
-    #     super(MyModelForm, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return self.country
@@ -33,7 +22,7 @@ class UserTeam(models.Model):
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
-
+    real = models.BooleanField(default=False, null=False)
     country = models.CharField(max_length=255)
     group = models.CharField(max_length=50, choices=GROUP_CHOICES, null=False)
     points = models.PositiveIntegerField(default=0)
@@ -52,7 +41,6 @@ class RealMatch(models.Model):
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     label = models.CharField(max_length=50, null=False, blank= True, editable=True)
     date = models.DateField(null=True, blank=True)
     phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)
@@ -93,72 +81,6 @@ class RealMatch(models.Model):
         verbose_name = 'RealMatch'
         verbose_name_plural = 'RealMatches'
 
-    @staticmethod
-    def save_team_stats(team, points, goals_favor, goals_against):
-        team.points = points
-        team.goals_favor = goals_favor
-        team.goals_against = goals_against
-        team.save()
-        return
-
-    @staticmethod
-    def set_team_stats(team):
-        points = 0
-        goals_favor = 0
-        goals_against = 0
-        matches = RealMatch.objects.filter(Q(team_one=team, played=True) | Q(team_two=team, played=True))
-        for match in matches:
-            if(match.winner == None):
-                points += 1
-            elif(match.winner == team):
-                points += 3
-            if (match.team_one == team):
-                goals_favor += match.team_one_score
-                goals_against += match.team_two_score
-            else:
-                goals_favor += match.team_two_score
-                goals_against += match.team_one_score
-        RealMatch.save_team_stats(team, points, goals_favor, goals_against)
-        return
-
-    @staticmethod
-    def check_phase(phase):
-        matches = RealMatch.objects.filter(played=True, phase=phase).count()
-        all = RealMatch.objects.filter(phase=phase).count()
-        if matches == all:
-            user.profile.groups_filled = True
-            print('Fase terminada')
-        else:
-            user.profile.groups_filled = False
-            print('Fase no terminada')
-        return
-
-@receiver(post_save, sender=RealMatch)
-def set_team_points(sender, instance, **kwargs):
-    if instance.phase == 'Groups' and instance.played == True:
-        RealMatch.set_team_stats(instance.team_one)
-        RealMatch.set_team_stats(instance.team_two)
-    RealMatch.check_phase(instance.phase)
-    return
-
-@receiver(pre_save, sender=RealMatch)
-def set_winner(sender, instance, **kwargs):
-    if int(instance.team_one_score) + int(instance.penals_team_one) == int(instance.team_two_score) + int(instance.penals_team_two):
-        instance.winner = None
-        instance.loser = None
-        if "Groups" not in instance.label:
-            instance.played = False
-            instance.team_one_score = 0
-            instance.team_two_score = 0
-            instance.penals_team_one = 0
-            instance.penals_team_two = 0
-    elif int(instance.team_one_score) + int(instance.penals_team_one) > int(instance.team_two_score) + int(instance.penals_team_two):
-        instance.winner = instance.team_one
-        instance.loser = instance.team_two
-    else:
-        instance.winner = instance.team_two
-        instance.loser = instance.team_one
-
 class UserMatch(models.Model):
     PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Fourths','Cuartos'),
                     ('Semi','Semifinal'),('3y4','Puesto 3 y 4'), ('Finals','Final'))
@@ -166,7 +88,7 @@ class UserMatch(models.Model):
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),
                     ('G','Grupo G'), ('H','Grupo H'))
-
+    real = models.BooleanField(default=False, null=False)
     label = models.CharField(max_length=50, null=False, blank= True, editable=False)
     date = models.DateField(null=True, blank=True)
     phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)

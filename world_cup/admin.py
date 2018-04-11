@@ -19,12 +19,6 @@ def check_groups(modeladmin, request, queryset):
             # if user.profile.groups_filled == True:
             print('Fase no terminada')
 check_groups.short_description = 'check groups'
-    # for match in queryset:
-    #     if match.played == True and match.phase == 'Groups':
-    #         set_team_points(match.winner)
-    #     else:
-    #         print("No se calcula puntajes")
-
 
 class RealMatchAdmin(admin.ModelAdmin):
     list_display = ['label', 'date', 'phase', 'group', 'team_one', 'team_two',
@@ -34,8 +28,13 @@ class RealMatchAdmin(admin.ModelAdmin):
                         'winner', 'loser')
     actions = [check_groups]
 
+class UserTeamAdmin(admin.ModelAdmin):
+    list_display = ['country', 'user']
+    readonly_fields = ('country', 'user')
+
+
 # Register your models here.
 admin.site.register(Team)
 admin.site.register(UserMatch)
-admin.site.register(UserTeam)
+admin.site.register(UserTeam, UserTeamAdmin)
 admin.site.register(RealMatch, RealMatchAdmin)

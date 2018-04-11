@@ -5,8 +5,79 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from world_cup.models import RealMatch, UserMatch, Team, UserTeam
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib import messages
+import json
+from django.db.models import Q
+
+class SaveMatchView(LoginRequiredMixin, TemplateView):
+    model = UserMatch
+
+    @staticmethod
+    def save_team_stats(team, points, goals_favor, goals_against):
+        team.points = points
+        team.goals_favor = goals_favor
+        team.goals_against = goals_against
+        team.save()
+        print(team.points)
+        print(team.goals_favor)
+        print(team.goals_against)
+        return
+
+    @staticmethod
+    def set_team_stats(team, user):
+        points = 0
+        goals_favor = 0
+        goals_against = 0
+        matches = UserMatch.objects.filter(Q(team_one=team, gambled=True, user=user) | Q(team_two=team, gambled=True, user=user))
+        for match in matches:
+            if(match.winner == None):
+                points += 1
+            elif(match.winner == team):
+                points += 3
+            if (match.team_one == team):
+                goals_favor += match.team_one_score
+                goals_against += match.team_two_score
+            else:
+                goals_favor += match.team_two_score
+                goals_against += match.team_one_score
+        SaveMatchView.save_team_stats(team, points, goals_favor, goals_against)
+        return
+
+    @staticmethod
+    def save_match(label, user, dict):
+        user_match = get_object_or_404(UserMatch, label=label, user=user)
+        user_match.team_one_score = dict['team_1']
+        user_match.team_two_score = dict['team_2']
+        user_match.gambled = True
+        if dict['team_1'] == dict['team_2']:
+            user_match.penals_team_one = dict['penals_1']
+            user_match.penals_team_two = dict['penals_2']
+            user_match.winner = None
+            user_match.loser = None
+        elif dict['team_1'] > dict['team_2']:
+            user_match.penals_team_one = 0
+            user_match.penals_team_two = 0
+            user_match.winner = user_match.team_one
+            user_match.loser = user_match.team_two
+        else:
+            user_match.penals_team_one = 0
+            user_match.penals_team_two = 0
+            user_match.winner = user_match.team_two
+            user_match.loser = user_match.team_one
+        user_match.user = user
+        user_match.save()
+        SaveMatchView.set_team_stats(user_match.team_one, user)
+        SaveMatchView.set_team_stats(user_match.team_two, user)
+        return
+
+    def post(self, request, *args, **kwargs):
+        dict = json.loads(request.body.decode('utf-8'))
+        label = dict['match_label']
+        user = request.user
+        SaveMatchView.save_match(label, user, dict)
+        response = {'status': 0}
+        return HttpResponse(json.dumps(response), content_type='application/json')
 
 class FinalsView(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -324,8 +395,6 @@ class GroupsView(LoginRequiredMixin, TemplateView):
             filter_list = list(filter(lambda match: match.group == group, user_teams))
             players[group] = filter_list[:2]
         GroupsView.create_eight(user, players)
-        user.profile.groups_filled = True
-        user.save()
         return
 
     @staticmethod
@@ -440,8 +509,10 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        GroupsView.score_matches(user, dict_gamble)
+        # GroupsView.score_matches(user, dict_gamble)
         GroupsView.sort_groups(user)
+        user.groups_filled = True
+        user.save()
         return redirect('groups_phase')
 
 class ReyparAdminView(LoginRequiredMixin, TemplateView):

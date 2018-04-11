@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from world_cup.views import (
 GroupsView, EightsView, FourthsView,
 SemiView, TercerCuartoView,
-FinalsView, ReyparAdminView
+FinalsView, ReyparAdminView, SaveMatchView
 )
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path('fase_tercer_cuarto/', TercerCuartoView.as_view(), name='third_fourth_phase'),
     path('fase_final/', FinalsView.as_view(), name='finals_phase'),
     path('reypar_admin/', ReyparAdminView.as_view(), name='reypar_admin'),
+    path('guardar_partido/', SaveMatchView.as_view(), name='save_match')
 ]
