@@ -133,12 +133,21 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {'object_list': object_list} )
 
     @staticmethod
-    def check_winners(user):
+    def check_winners(request, user):
+        TercerCuartoView.fill_winners(user)
+        TercerCuartoView.fill_losers(user)
         counter = 0
+        warnings = []
         for key, value in TercerCuartoView.winners.items():
-            if len(str(value)) > 2:
+            if value != None and value != '':
                 counter += 1
-        if counter == 1:
+            else:
+                warnings += key[0]
+                print(key, value)
+        print(warnings)
+        if len(warnings) >= 1:
+            messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
+        if len(warnings) == 0 and counter == 1:
             user.profile.trd_fth_filled = True
             user.save()
         return
@@ -165,9 +174,11 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        FinalsView.fill_winners(user)
-        FinalsView.fill_losers(user)
+        TercerCuartoView.fill_winners(user)
+        TercerCuartoView.fill_losers(user)
         GroupsView.score_matches(request, user, dict_gamble)
+        TercerCuartoView.check_winners(request, user)
+        print(TercerCuartoView.winners)
         return redirect('third_fourth_phase')
 
 class SemiView(LoginRequiredMixin, TemplateView):
