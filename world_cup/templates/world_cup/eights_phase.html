@@ -8,6 +8,7 @@
     {% endfor %}
 </ul>
 {% endif %}
+
 <form class="" action="/fase_octavos/" method="post">
 {% csrf_token %}
 {% if user.profile.groups_filled == False %}
@@ -66,6 +67,4 @@ Llena la fase de grupos primero para llenar la fase de octavos😯
 
 {% block group_detail %}
 {% endblock %}
-
-
 {% endblock %}

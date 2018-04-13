@@ -258,12 +258,19 @@ class FourthsView(LoginRequiredMixin, TemplateView):
         return
 
     @staticmethod
-    def check_winners(user):
+    def check_winners(request, user):
+        FourthsView.fill_winners(user)
         counter = 0
+        warnings = []
         for key, value in FourthsView.winners.items():
-            if len(str(value)) > 2:
+            if value != None and value != '':
                 counter += 1
-        if counter == 4:
+            else:
+                warnings += key[0]
+
+        if len(warnings) >= 1:
+            messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
+        if len(warnings) == 0 and counter == 4:
             FourthsView.create_semi(user)
             user.profile.fourths_filled = True
             user.save()
@@ -284,7 +291,7 @@ class FourthsView(LoginRequiredMixin, TemplateView):
         user = request.user
         FourthsView.fill_winners(user)
         GroupsView.score_matches(request, user, dict_gamble)
-        FourthsView.check_winners(user)
+        FourthsView.check_winners(request, user)
         return redirect('fourths_phase')
 
 class EightsView(LoginRequiredMixin, TemplateView):
@@ -313,8 +320,8 @@ class EightsView(LoginRequiredMixin, TemplateView):
             else:
                 warnings += key[0]
         if len(warnings) >= 1:
-                messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
-        if counter == 8:
+            messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
+        elif len(warnings) == 0 and counter == 8:
             EightsView.create_fourths(user)
             user.profile.eights_filled = True
             user.save()
@@ -341,9 +348,7 @@ class EightsView(LoginRequiredMixin, TemplateView):
         for match in user_matches:
             for key, value in EightsView.winners.items():
                 if match.label == key:
-                    print(match.winner)
                     EightsView.winners[key] = match.winner
-        print(EightsView.winners)
         return
 
     def post(self, request, *args, **kwargs):
@@ -423,15 +428,27 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         points_two = 0
         winner = ''
         loser = ''
-        if int(user_match.team_one_score) + int(user_match.penals_team_one) == int(user_match.team_two_score) + int(user_match.penals_team_two):
-            user_match.winner = None
-            user_match.loser = None
-        elif int(user_match.team_one_score) + int(user_match.penals_team_one) > int(user_match.team_two_score) + int(user_match.penals_team_two):
-            user_match.winner = user_match.team_one
-            user_match.loser = user_match.team_two
-        else:
-            user_match.winner = user_match.team_two
-            user_match.loser = user_match.team_one
+        if int(user_match.team_one_score) != int(user_match.team_two_score):
+            if int(user_match.penals_team_one) > 0 or int(user_match.penals_team_two) > 0:
+                user_match.winner = None
+                user_match.loser = None
+            elif int(user_match.team_one_score) > int(user_match.team_two_score):
+                user_match.winner = user_match.team_one
+                user_match.loser = user_match.team_two
+            elif int(user_match.team_one_score) < int(user_match.team_two_score):
+                user_match.winner = user_match.team_two
+                user_match.loser = user_match.team_one
+
+        elif int(user_match.team_one_score) == int(user_match.team_two_score):
+            if int(user_match.penals_team_one) == int(user_match.penals_team_two):
+                user_match.winner = None
+                user_match.loser = None
+            elif int(user_match.penals_team_one) > int(user_match.penals_team_two):
+                user_match.winner = user_match.team_one
+                user_match.loser = user_match.team_two
+            elif int(user_match.penals_team_one) < int(user_match.penals_team_two):
+                user_match.winner = user_match.team_two
+                user_match.loser = user_match.team_one
 
         user_match.save()
 
@@ -495,7 +512,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
                 penals_two = ''
         if count > 0:
             messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no necesitan penalties 🙊')
-        return
+        return count
 
     @staticmethod
     def save_or_not(request, user, dict_counter):
@@ -524,8 +541,9 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         dict_gamble = dict(request.POST.items())
         dict_gamble.pop('csrfmiddlewaretoken', None)
         user = request.user
-        GroupsView.score_matches(request, user, dict_gamble)
-        GroupsView.check_winners(request, user)
+        ok = GroupsView.score_matches(request, user, dict_gamble)
+        if ok == 0:
+            GroupsView.check_winners(request, user)
         return redirect('groups_phase')
 
 class ReyparAdminView(LoginRequiredMixin, TemplateView):
