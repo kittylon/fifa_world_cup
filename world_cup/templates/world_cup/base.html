@@ -18,8 +18,10 @@
             Polla Mundialista Reypar
             <small>FIFA 2018⚽</small>
           </h2>
-        {% if permiso == False %}
-          Tenías tiempo de llenar tus pronósticos hasta el {{date_permissions.date}}
+        {% if permiso == None %}
+          Ponte en contacto con el administrador, no han definido las fechas de la actividad
+        {% elif permiso == False %}
+          Las fechas para guardar el pronóstico eran desde {{start_date}} hasta el {{end_date}} 😰
         {% else%}
         <section>
           {% if user.profile.groups_filled == True %}

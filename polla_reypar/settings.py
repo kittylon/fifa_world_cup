@@ -65,7 +65,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'world_cup.context_processor.Date_Permissions_data',
                 'world_cup.context_processor.date_now',
             ],
         },
