@@ -195,12 +195,20 @@ class SemiView(LoginRequiredMixin, TemplateView):
         return
 
     @staticmethod
-    def check_winners(user):
+    def check_winners(request, user):
+        SemiView.fill_winners(user)
+        SemiView.fill_losers(user)
         counter = 0
+        warnings = []
         for key, value in SemiView.winners.items():
-            if len(str(value)) > 2:
+            if value != None and value != '':
                 counter += 1
-        if counter == 2:
+            else:
+                warnings += key[0]
+        print(warnings)
+        if len(warnings) >= 1:
+            messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
+        if len(warnings) == 0 and counter == 2:
             SemiView.create_third_fourth(user)
             SemiView.create_final(user)
             user.profile.semi_filled = True
@@ -234,7 +242,7 @@ class SemiView(LoginRequiredMixin, TemplateView):
         SemiView.fill_winners(user)
         SemiView.fill_losers(user)
         GroupsView.score_matches(request, user, dict_gamble)
-        SemiView.check_winners(user)
+        SemiView.check_winners(request, user)
         return redirect('semi_phase')
 
 class FourthsView(LoginRequiredMixin, TemplateView):

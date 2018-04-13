@@ -55,7 +55,7 @@ Llena la fase de grupos primero para llenar la fase de octavos😯
 {% if user.profile.groups_filled == False %}
 {% elif user.profile.eights_filled == False %}
 <div class="col-xs-12 text-center">
-  <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar resultados">
+  <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar Resultados">
 </div>
 {% elif user.profile.eights_filled == True %}
 <div class="col-xs-12 text-center">
@@ -64,7 +64,6 @@ Llena la fase de grupos primero para llenar la fase de octavos😯
 {% endif %}
 {% endif %}
 </form>
-
 {% block group_detail %}
 {% endblock %}
 {% endblock %}
