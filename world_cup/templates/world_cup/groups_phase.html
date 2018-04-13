@@ -2,68 +2,68 @@
 {% block js %}
 {% endblock %}
 {% block content %}
+  <br>
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
 
-<br>
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{{ user.groups_filled }}
-<form class="" action="/fase_grupos/" method="post">
-{% csrf_token %}
-{% for key, value in groups.items %}
-  <h3>Grupo {{ key }} </h3>
-<div class='panel panel-default'>
-<table class="table">
-  <thead class="thead-dark">
+  {{ user.groups_filled }}
+  <form class="" action="/fase_grupos/" method="post">
+  {% csrf_token %}
+  {% for key, value in groups.items %}
+    <h3>Grupo {{ key }} </h3>
+  <div class='panel panel-default'>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th>Fecha</th>
+        <th>Equipo 1</th>
+        <th>Goles</th>
+        <th>Goles</th>
+        {% if user.profile.groups_filled == False %}
+        <th> </th>
+        {% endif %}
+        <th>Equipo 2</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for match in value %}
     <tr>
-      <th>Fecha</th>
-      <th>Equipo 1</th>
-      <th>Goles</th>
-      <th>Goles</th>
+      <input type="hidden" id="{{match.label}}|" name="{{match.label}}|" value="{{match.label}}|">
+      <td>{{match.date}}</td>
+      <td>{{match.team_one}} {{match.team_one.emoji}}</td>
       {% if user.profile.groups_filled == False %}
-      <th> </th>
+      <td class='col-xs-1'><input type="number" min="0" class="form-control" id="{{match.label}}|team_1" name="{{match.label}}|real_1" value={{match.team_one_score}} required></td>
+      <td class='col-xs-1'><input type="number" min="0" class="form-control" id="{{match.label}}|team_2" name="{{match.label}}|real_2" value={{match.team_two_score}} required></td>
+      <td><button type="button" id="{{match.label}}" onclick="save_match('{{match.label}}|')" class='btn btn-lg btn-primary'>Guardar</button></td>
+      {% else %}
+      <td>{{match.team_one_score}}</td>
+      <td>{{match.team_two_score}}</td>
       {% endif %}
-      <th>Equipo 2</th>
+      <td>{{match.team_two.emoji}} {{match.team_two}}</td>
+      <input type="hidden" id="{{match.label}}|penals_1" name="{{match.label}}|penals_1" value='0'>
+      <input type="hidden" id="{{match.label}}|penals_2" name="{{match.label}}|penals_2" value='0'>
     </tr>
-  </thead>
-  <tbody>
-  {% for match in value %}
-  <tr>
-    <input type="hidden" id="{{match.label}}|" name="{{match.label}}|" value="{{match.label}}|">
-    <td>{{match.date}}</td>
-    <td>{{match.team_one}} {{match.team_one.emoji}}</td>
-    {% if user.profile.groups_filled == False %}
-    <td class='col-xs-1'><input type="number" min="0" class="form-control" id="{{match.label}}|team_1" name="{{match.label}}|real_1" value={{match.team_one_score}} required></td>
-    <td class='col-xs-1'><input type="number" min="0" class="form-control" id="{{match.label}}|team_2" name="{{match.label}}|real_2" value={{match.team_two_score}} required></td>
-    <td><button type="button" id="{{match.label}}" onclick="save_match('{{match.label}}|')" class='btn btn-lg btn-primary'>Guardar</button></td>
-    {% else %}
-    <td>{{match.team_one_score}}</td>
-    <td>{{match.team_two_score}}</td>
-    {% endif %}
-    <td>{{match.team_two.emoji}} {{match.team_two}}</td>
-    <input type="hidden" id="{{match.label}}|penals_1" name="{{match.label}}|penals_1" value='0'>
-    <input type="hidden" id="{{match.label}}|penals_2" name="{{match.label}}|penals_2" value='0'>
-  </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
   {% endfor %}
-  </tbody>
-</table>
-</div>
-{% endfor %}
-{% if user.profile.groups_filled == False %}
-<div class="col-xs-12 text-center">
-  <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar Resultados">
-</div>
-{% elif user.profile.groups_filled == True %}
-<div class="col-xs-12 text-center">
-  <a href='/fase_octavos/' class='btn btn-lg btn-primary'>Ir a Octavos </a>
-</div>
-{% endif %}
-</form>
-{% block group_detail %}
-{% endblock %}
+  {% if user.profile.groups_filled == False %}
+  <div class="col-xs-12 text-center">
+    <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar Resultados">
+  </div>
+  {% elif user.profile.groups_filled == True %}
+  <div class="col-xs-12 text-center">
+    <a href='/fase_octavos/' class='btn btn-lg btn-primary'>Ir a Octavos </a>
+  </div>
+  {% endif %}
+  </form>
+  {% block group_detail %}
+  {% endblock %}
+
 {% endblock %}

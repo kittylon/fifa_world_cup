@@ -4,6 +4,12 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 # Create your models here.
+class DatePermissions(models.Model):
+    PHASE_CHOICES = (('Groups','Grupos'), ('Eights','Octavos'), ('Fourths','Cuartos'),
+                    ('Semi','Semifinal'),('3y4','Puesto 3 y 4'), ('Finals','Final'))
+    date =  models.DateTimeField(null=True, blank=True)
+    phase = models.CharField(max_length=50, choices=PHASE_CHOICES, null=False)
+
 class Team(models.Model):
     GROUP_CHOICES = (('A','Grupo A'), ('B','Grupo B'), ('C','Grupo C'),
                     ('D','Grupo D'), ('E','Grupo E'), ('F','Grupo F'),

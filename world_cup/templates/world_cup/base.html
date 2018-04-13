@@ -18,6 +18,9 @@
             Polla Mundialista Reypar
             <small>FIFA 2018⚽</small>
           </h2>
+        {% if permiso == False %}
+          Tenías tiempo de llenar tus pronósticos hasta el {{date_permissions.date}}
+        {% else%}
         <section>
           {% if user.profile.groups_filled == True %}
           <span>Ir a: </span>
@@ -27,6 +30,7 @@
 
         {% block content %}
         {% endblock %}
+        {% endif %}
       </div>
     <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"
