@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clients',
-    'world_cup'
+    'world_cup',
+    'dal',
+    'dal_select2'
 ]
 
 MIDDLEWARE = [

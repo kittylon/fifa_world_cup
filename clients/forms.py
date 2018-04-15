@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from clients.models import Client
 from django.contrib.auth.forms import UserCreationForm
+from dal import autocomplete
 
 ID_CHOICES = (('CC','Cédula'), ('PA','Pasaporte'), ('CE','Cédula de extranjería'))
 
@@ -15,7 +16,10 @@ class SignUpForm(UserCreationForm):
     city = forms.CharField(label='Ciudad')
     phone = forms.IntegerField(label='Teléfono')
     address = forms.CharField(label='Dirección')
-    company = forms.ModelChoiceField(label='Empresa', queryset=Client.objects.all())
+    company = forms.ModelChoiceField(label='Empresa',
+        queryset=Client.objects.all(),
+        widget=autocomplete.ModelSelect2(url='client-autocomplete')
+    )
     job_title = forms.CharField(label='Cargo en su empresa')
 
     class Meta:
