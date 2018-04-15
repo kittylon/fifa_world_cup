@@ -7,6 +7,17 @@ from world_cup.models import Team, RealMatch, UserMatch, UserTeam
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
+from dal import autocomplete
+
+
+class ClientAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Client.objects.all()
+
+        if (self.q):
+            qs = qs.filter(name__startswith = self.q)
+
+        return qs
 
 # Views to register a new user
 class RegisterView(TemplateView):
