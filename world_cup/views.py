@@ -9,6 +9,16 @@ from django.http import Http404, HttpResponse
 from django.contrib import messages
 import json
 from django.db.models import Q
+from clients.models import Profile
+
+class RankingView(TemplateView):
+    template_name = 'world_cup/Ranking.html'
+
+    def get(self, request, *args, **kwargs):
+        points = Profile.objects.all()
+        for point in points:
+            print(point)
+        return
 
 class SaveMatchView(LoginRequiredMixin, TemplateView):
     model = UserMatch
@@ -101,8 +111,7 @@ class FinalsView(LoginRequiredMixin, TemplateView):
                 counter += 1
             else:
                 warnings += key[0]
-                print(key, value)
-        print(warnings)
+
         if len(warnings) >= 1:
             messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
         if len(warnings) == 0 and counter == 1:
@@ -163,8 +172,7 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
                 counter += 1
             else:
                 warnings += key[0]
-                print(key, value)
-        print(warnings)
+
         if len(warnings) >= 1:
             messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
         if len(warnings) == 0 and counter == 1:
@@ -198,7 +206,6 @@ class TercerCuartoView(LoginRequiredMixin, TemplateView):
         TercerCuartoView.fill_losers(user)
         GroupsView.score_matches(request, user, dict_gamble)
         TercerCuartoView.check_winners(request, user)
-        print(TercerCuartoView.winners)
         return redirect('third_fourth_phase')
 
 class SemiView(LoginRequiredMixin, TemplateView):
@@ -236,7 +243,6 @@ class SemiView(LoginRequiredMixin, TemplateView):
                 counter += 1
             else:
                 warnings += key[0]
-        print(warnings)
         if len(warnings) >= 1:
             messages.warning(request, 'Partido(s) ' + ', '.join(warnings) + ' no tiene(n) un ganador 😧')
         if len(warnings) == 0 and counter == 2:

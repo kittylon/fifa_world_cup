@@ -11,6 +11,7 @@ class Client(models.Model):
     nit = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     profile = models.CharField(max_length=50, choices=PROFILE_CHOICES, null=False)
+    quantity = models.IntegerField(default=5)
 
     def __str__(self):
         return self.name

@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
-from datetime import datetime 
+from datetime import datetime
+from django.db.models import Q
 
 # Create your models here.
 class DatePermissions(models.Model):
@@ -133,3 +134,14 @@ class UserMatch(models.Model):
     class Meta:
         verbose_name = 'UserMatch'
         verbose_name_plural = 'UserMatches'
+
+    @staticmethod
+    def cal_points(match):
+        print(match.label)
+        user_matches = UserMatch.objects.filter(Q(label=match.label) & ~Q(user=match.user))
+
+@receiver(post_save, sender=UserMatch)
+def create_user_profile(sender, instance, created, **kwargs):
+    if str(instance.user.username) == 'polla_admin':
+        print('Calcular puntos de todo el mundo')
+        UserMatch.cal_points(instance)
