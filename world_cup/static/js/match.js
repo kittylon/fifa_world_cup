@@ -6,7 +6,7 @@ function save_match(label){
   var penals_1 = parseInt(document.getElementById(label + 'penals_1').value)
   var penals_2 = parseInt(document.getElementById(label + 'penals_2').value)
   var token = document.getElementsByName("csrfmiddlewaretoken")[0].value
-  var check = check_inputs(team_1, team_2, penals_1, penals_2)
+  var check = check_inputs(team_1, team_2, penals_1, penals_2, label)
 
   if (check == true)
   {
@@ -33,7 +33,7 @@ function save_match(label){
   }
 }
 
-function check_inputs(team_1, team_2, penals_1, penals_2){
+function check_inputs(team_1, team_2, penals_1, penals_2, label){
 
   if (isNaN(team_1) || isNaN(team_2) || team_1 < 0 || team_2 < 0){
     alert('Verifica el valor de los goles')
@@ -47,7 +47,7 @@ function check_inputs(team_1, team_2, penals_1, penals_2){
     alert('Los penales no son necesarios, verifica por favor')
     return false
   }
-  else if(team_1 == team_2 && ((penals_1 < 0 || penals_2 < 0) || (penals_1 == penals_2))){
+  else if(!label.includes('Groups') && team_1 == team_2 && ((penals_1 < 0 || penals_2 < 0) || (penals_1 == penals_2))){
     alert('Asegúrate de que los penales definan un ganador')
     return false
   }

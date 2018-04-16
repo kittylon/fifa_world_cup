@@ -138,7 +138,29 @@ class UserMatch(models.Model):
     @staticmethod
     def cal_points(match):
         print(match.label)
+        print(match.user)
         user_matches = UserMatch.objects.filter(Q(label=match.label) & ~Q(user=match.user))
+        for u_match in user_matches:
+            if match.team_one.country == u_match.team_one.country and match.team_two.country == u_match.team_two.country:
+                if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score:
+                    #u_match.points = 3
+                    #u_match.save()
+                    print("obtienes 3 puntos")
+                    print(u_match.points)
+                elif match.winner == u_match.winner and match.loser == u_match.loser:
+                        #u_match.points = 1
+                        #u_match.save()
+                    print('Obtienes un punto')
+                #elif str(match.winner) == str(u_match.winner) and str(match.loser.country == u_match.loser.country:
+                    #u_match.points = 1
+                    #u_match.save()
+                #    print('Same winners!')
+                else:
+                    #u_match.points = 0
+                    #u_match.save()
+                    print('sorry, no points for U')
+            else:
+                print('la cagamos')
 
 @receiver(post_save, sender=UserMatch)
 def create_user_profile(sender, instance, created, **kwargs):
