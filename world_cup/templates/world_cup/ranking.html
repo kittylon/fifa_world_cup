@@ -19,20 +19,37 @@
             <small>FIFA 2018⚽</small>
           </h2>
           {% if user.is_authenticated %}
-            Tu puntaje es:
-            <br>
-            {{ user.username }} {{ user.profile.total_points }}
-            <br>
+            <h1>{{ user.username }} Tu puntaje es: {{ user.profile.total_points }}</h1>
+            <br />
           {% endif %}
-
-        {% for object in object_list %}
-        {% if object.user.username != 'polla_admin' %}
-          {{object.user.username}}
-          {{object.total_points}}
-          <br>
-        {% endif %}
-        {% endfor %}
-
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th>Posición</th>
+              <th>Usuario</th>
+              <th>Empresa</th>
+              <th>Puntaje</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for object in object_list %}
+          <tr>
+            {% if user.username == object.user.username %}
+              <td><b>{{ forloop.counter }}</b></td>
+              <td><b>{{ object.user.username }}</b></td>
+              <td><b>{{ object.company }}</b></td>
+              <td><b>{{ object.total_points }}</b></td>
+            {% else %}
+              <td>{{ forloop.counter }}</td>
+              <td>{{ object.user.username }}</td>
+              <td>{{ object.company }}</td>
+              <td>{{ object.total_points }}</td>
+            {% endif %}
+            <br>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
        </div>
     <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"

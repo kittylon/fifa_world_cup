@@ -17,7 +17,7 @@ class RankingView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         try:
-            object_list =  Profile.objects.all().order_by('-total_points')[:100]
+            object_list =  Profile.objects.filter(Q(active=True) & ~Q(user__username='polla_admin')).order_by('-total_points')[:100]
         except:
             raise Http404
         return render(request, self.template_name, {'object_list': object_list} )
