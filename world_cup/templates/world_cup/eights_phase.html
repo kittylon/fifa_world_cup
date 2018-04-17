@@ -22,8 +22,8 @@ Llena la fase de grupos primero para llenar la fase de octavos😯
       <th>Goles</th>
       <th>Goles</th>
       <th>Equipo 2</th>
-      <th>Penal</th>
-      <th>Penal</th>
+      <th>Penal Equipo 1</th>
+      <th>Penal Equipo 2</th>
     </tr>
   </thead>
   <tbody>
@@ -43,7 +43,9 @@ Llena la fase de grupos primero para llenar la fase de octavos😯
     {% if user.profile.eights_filled == False %}
     <td><input type="number" min="0" class="form-control" id="{{match.label}}|penals_1" name="{{match.label}}|penals_1" value={{match.penals_team_one}} required></td>
     <td><input type="number" min="0" class="form-control" id="{{match.label}}|penals_2" name="{{match.label}}|penals_2" value={{match.penals_team_two}} required></td>
+    {% if user.username == 'polla_admin' %}
     <td><button type="button" id="{{match.label}}" onclick="save_match('{{match.label}}|')" class='btn btn-lg btn-primary'>Guardar</button></td>
+    {% endif %}
     {% else %}
     <td>{{match.penals_team_one}}</td>
     <td>{{match.penals_team_two}}</td>

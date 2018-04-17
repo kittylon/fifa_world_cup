@@ -12,13 +12,15 @@ from django.db.models import Q
 from clients.models import Profile
 
 class RankingView(TemplateView):
-    template_name = 'world_cup/Ranking.html'
+    template_name = 'world_cup/ranking.html'
+    model = Profile
 
     def get(self, request, *args, **kwargs):
-        points = Profile.objects.all()
-        for point in points:
-            print(point)
-        return
+        try:
+            object_list =  Profile.objects.all().order_by('-total_points')[:100]
+        except:
+            raise Http404
+        return render(request, self.template_name, {'object_list': object_list} )
 
 class SaveMatchView(LoginRequiredMixin, TemplateView):
     model = UserMatch

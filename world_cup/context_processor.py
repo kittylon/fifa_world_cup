@@ -1,7 +1,9 @@
 from django.urls import reverse
 from world_cup.models import DatePermissions
+from clients.models import Profile
 import datetime
 from django.utils import timezone
+from django.db.models import Q
 
 def date_now(request):
     admin_date = DatePermissions.objects.all().first()

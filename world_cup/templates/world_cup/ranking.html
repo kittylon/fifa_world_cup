@@ -18,9 +18,21 @@
             Polla Mundialista Reypar
             <small>FIFA 2018⚽</small>
           </h2>
-          RANKING RANKING RANKING RANKING RANKING RANKING
-        {% block content %}
-        {% endblock %}
+          {% if user.is_authenticated %}
+            Tu puntaje es:
+            <br>
+            {{ user.username }} {{ user.profile.total_points }}
+            <br>
+          {% endif %}
+
+        {% for object in object_list %}
+        {% if object.user.username != 'polla_admin' %}
+          {{object.user.username}}
+          {{object.total_points}}
+          <br>
+        {% endif %}
+        {% endfor %}
+
        </div>
     <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"

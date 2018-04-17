@@ -136,31 +136,131 @@ class UserMatch(models.Model):
         verbose_name_plural = 'UserMatches'
 
     @staticmethod
+    def cal_groups(phase, user):
+        groups_points = 0
+        users = User.objects.filter(~Q(username=user))
+        for u in users:
+            groups_points = 0
+            user_matches = UserMatch.objects.filter(phase=phase, user=u)
+            for match in user_matches:
+                groups_points += match.points
+            u.profile.groups_points = groups_points
+            u.profile.total_points = u.profile.groups_points + u.profile.eights_points + u.profile.fourths_points + u.profile.semi_points + u.profile.trd_fth_points + u.profile.final_points
+            u.save()
+
+    @staticmethod
+    def cal_eights(phase, user):
+        eights_points = 0
+        users = User.objects.filter(~Q(username=user))
+        for u in users:
+            eights_points = 0
+            user_matches = UserMatch.objects.filter(phase=phase, user=u)
+            for match in user_matches:
+                eights_points += match.points
+            u.profile.eights_points = eights_points
+            u.profile.total_points = u.profile.groups_points + u.profile.eights_points + u.profile.fourths_points + u.profile.semi_points + u.profile.trd_fth_points + u.profile.final_points
+            u.save()
+
+    @staticmethod
+    def cal_fourhts(phase, user):
+        fourths_points = 0
+        users = User.objects.filter(~Q(username=user))
+        for u in users:
+            fourths_points = 0
+            user_matches = UserMatch.objects.filter(phase=phase, user=u)
+            for match in user_matches:
+                fourths_points += match.points
+            u.profile.fourths_points = fourths_points
+            u.profile.total_points = u.profile.groups_points + u.profile.eights_points + u.profile.fourths_points + u.profile.semi_points + u.profile.trd_fth_points + u.profile.final_points
+            u.save()
+
+    @staticmethod
+    def cal_semi(phase, user):
+        semi_points = 0
+        users = User.objects.filter(~Q(username=user))
+        for u in users:
+            semi_points = 0
+            user_matches = UserMatch.objects.filter(phase=phase, user=u)
+            for match in user_matches:
+                semi_points += match.points
+            u.profile.semi_points = semi_points
+            u.profile.total_points = u.profile.groups_points + u.profile.eights_points + u.profile.fourths_points + u.profile.semi_points + u.profile.trd_fth_points + u.profile.final_points
+            u.save()
+
+    @staticmethod
+    def cal_thrd_fourth(phase, user):
+        trd_fth_points = 0
+        users = User.objects.filter(~Q(username=user))
+        for u in users:
+            trd_fth_points = 0
+            user_matches = UserMatch.objects.filter(phase=phase, user=u)
+            for match in user_matches:
+                trd_fth_points += match.points
+            u.profile.trd_fth_points = trd_fth_points
+            u.profile.total_points = u.profile.groups_points + u.profile.eights_points + u.profile.fourths_points + u.profile.semi_points + u.profile.trd_fth_points + u.profile.final_points
+            u.save()
+
+    @staticmethod
+    def cal_final(phase, user):
+        final_points = 0
+        users = User.objects.filter(~Q(username=user))
+        for u in users:
+            final_points = 0
+            user_matches = UserMatch.objects.filter(phase=phase, user=u)
+            for match in user_matches:
+                final_points += match.points
+            u.profile.final_points = final_points
+            u.save()
+
+    @staticmethod
+    def check_phase(phase, user):
+        if "Groups" in phase:
+            UserMatch.cal_groups(phase, user)
+        if "Eights" in phase:
+            UserMatch.cal_eights(phase, user)
+        elif "Fourths" in phase:
+            UserMatch.cal_fourhts(phase, user)
+        elif "Semi" in phase:
+            UserMatch.cal_semi(phase, user)
+        elif "3y4" in phase:
+            UserMatch.cal_thrd_fourth(phase, user)
+        elif "Finals" in phase:
+            UserMatch.cal_final(phase, user)
+        else:
+            print("Label no válido")
+        return
+
+    @staticmethod
     def cal_points(match):
-        print(match.label)
-        print(match.user)
         user_matches = UserMatch.objects.filter(Q(label=match.label) & ~Q(user=match.user))
         for u_match in user_matches:
             if match.team_one.country == u_match.team_one.country and match.team_two.country == u_match.team_two.country:
-                if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score:
-                    #u_match.points = 3
-                    #u_match.save()
-                    print("obtienes 3 puntos")
-                    print(u_match.points)
-                elif match.winner == u_match.winner and match.loser == u_match.loser:
-                        #u_match.points = 1
-                        #u_match.save()
-                    print('Obtienes un punto')
-                #elif str(match.winner) == str(u_match.winner) and str(match.loser.country == u_match.loser.country:
-                    #u_match.points = 1
-                    #u_match.save()
-                #    print('Same winners!')
+                if match.phase == 'Groups':
+                    if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score:
+                        u_match.points = 3
+                        u_match.save()
+                    elif str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser):
+                        u_match.points = 1
+                        u_match.save()
+                        print('Obtienes un punto')
+                    else:
+                        u_match.points = 0
+                        u_match.save()
                 else:
-                    #u_match.points = 0
-                    #u_match.save()
-                    print('sorry, no points for U')
+                    if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score and str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser):
+                        u_match.points = 4
+                        u_match.save()
+                    elif str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser):
+                        u_match.points = 1
+                        u_match.save()
+                        print('Obtienes un punto')
+                    else:
+                        u_match.points = 0
+                        u_match.save()
             else:
-                print('la cagamos')
+                print('No le atinaste al pronóstico de los jugadores')
+        UserMatch.check_phase(match.phase, match.user)
+
 
 @receiver(post_save, sender=UserMatch)
 def create_user_profile(sender, instance, created, **kwargs):
