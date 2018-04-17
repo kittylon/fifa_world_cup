@@ -38,6 +38,7 @@ def register_user(request):
             user.refresh_from_db()  # load the profile instance created by the signal
             user.first_name = form.cleaned_data.get('name')
             user.last_name = form.cleaned_data.get('last_name')
+            user.profile.email = form.cleaned_data('email')
             user.email = form.cleaned_data.get('email')
             user.profile.birth_date = form.cleaned_data.get('birth_date')
             user.profile.document_type = form.cleaned_data.get('document_type')

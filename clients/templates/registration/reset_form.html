@@ -2,10 +2,9 @@
 
 {% block content %}
   <h3>Forgot password</h3>
-  OOOOOOOOOOOOsssss
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
+    <button type="submit">Enviar</button>
   </form>
 {% endblock %}

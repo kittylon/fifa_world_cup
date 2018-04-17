@@ -2,16 +2,17 @@
 
 {% block content %}
   {% if validlink %}
-    <h3>Change password</h3>
+    <h3>Cambiar contraseña</h3>
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Change password</button>
+      <button type="submit">Cambiar contraseña</button>
     </form>
   {% else %}
     <p>
-      The password reset link was invalid, possibly because it has already been used.
-      Please request a new password reset.
+      El link para reestablecer la contraseña ya no es válido,
+      probablemente ya se usó
+      Por favor vuelve a intentar reestabler la contraseña.
     </p>
   {% endif %}
 {% endblock %}

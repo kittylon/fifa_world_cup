@@ -21,7 +21,7 @@ urlpatterns = [
         name='client-autocomplete'
     ),
     ##url('', include('django.contrib.auth.urls')),
-    path('password_reset/', auth_views.password_reset, { 'template_name': 'registration/reset_form.html'}),
+    path('password_reset/', auth_views.password_reset, { 'template_name': 'registration/reset_form.html'}, name='password_reset'),
     path('password_reset/done/',auth_views.password_reset_done,
         {
             'template_name': 'registration/reset_done.html',
