@@ -247,9 +247,13 @@ class UserMatch(models.Model):
                         u_match.points = 0
                         u_match.save()
                 else:
-                    if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score and str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser):
-                        u_match.points = 4
-                        u_match.save()
+                    if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score:
+                        if (match.penals_team_one > 0  or match.penals_team_two > 0) and (str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser)):
+                            u_match.points = 4
+                            u_match.save()
+                        else:
+                            u_match.points = 3
+                            u_match.save()
                     elif str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser):
                         u_match.points = 1
                         u_match.save()

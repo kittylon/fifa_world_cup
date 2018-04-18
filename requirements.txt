@@ -1,3 +1,4 @@
 Django==2.0.3
 django-autocomplete-light==3.2.10
 pytz==2018.3
+python==3.6.3

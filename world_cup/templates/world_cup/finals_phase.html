@@ -9,6 +9,17 @@
 </ul>
 {% endif %}
 
+{% if user.profile.final_filled == False %}
+Instrucciones:
+<ul>
+    <li>Ingresa tus pronósticos de resultados para el CAMPEON DE LA COPA.</li>
+    <li>En caso de empate define el marcador en las casillas de los penales.</li>
+    <li>Al guardar cada fase no hay retroceso en sus pronósticos.</li>
+</ui>
+{% else %}
+Estos son tus resultados:
+{% endif %}
+
 <form class="" action="/fase_final/" method="post">
 {% csrf_token %}
 {% if user.profile.trd_fth_filled == False %}

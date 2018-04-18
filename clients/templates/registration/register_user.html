@@ -12,7 +12,11 @@
 <form class="" action="." method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <input type="submit" name="" value="Registrar">
+  <input type="checkbox" onchange="document.getElementById('sendNewSms').disabled = !this.checked;" name="vehicle" value="Car" checked><a href="{% url 'terms' %}">
+  Acepto los términos y condiciones</a><br>
+
+  <input type="submit" id="sendNewSms" name="" value="Registrar">
+
 </form>
 {% endblock %}
 <!-- TODO:  -->

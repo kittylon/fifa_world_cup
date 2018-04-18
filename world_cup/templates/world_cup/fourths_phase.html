@@ -9,6 +9,17 @@
 </ul>
 {% endif %}
 
+{% if user.profile.fourths_filled == False %}
+Instrucciones:
+<ul>
+    <li>Ingresa tus pronósticos de resultados para continuar en la Semifinal.</li>
+    <li>En caso de empate define el marcador en las casillas de los penales.</li>
+    <li>Al guardar cada fase no hay retroceso en sus pronósticos.</li>
+</ui>
+{% else %}
+Estos son tus resultados:
+{% endif %}
+
 <form class="" action="/fase_cuartos/" method="post">
 {% csrf_token %}
 {% if user.profile.eights_filled == False %}

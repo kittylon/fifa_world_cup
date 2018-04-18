@@ -11,6 +11,9 @@ import json
 from django.db.models import Q
 from clients.models import Profile
 
+class TermsView(TemplateView):
+    template_name = 'world_cup/terms.html'
+
 class RankingView(TemplateView):
     template_name = 'world_cup/ranking.html'
     model = Profile

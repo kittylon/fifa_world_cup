@@ -1,13 +1,12 @@
 from django.urls import reverse
 from world_cup.models import DatePermissions
-from clients.models import Profile
+from clients.models import Profile, TermsConditions
 import datetime
 from django.utils import timezone
 from django.db.models import Q
 
 def date_now(request):
     admin_date = DatePermissions.objects.all().first()
-    print(admin_date)
     now = timezone.now()
     ok = False
     if admin_date.start_date == None or admin_date.end_date == None:
@@ -17,3 +16,7 @@ def date_now(request):
     else:
         ok = False
     return {'permiso': ok, 'start_date': admin_date.start_date, 'end_date': admin_date.end_date}
+
+def terms(request):
+    terms = TermsConditions.objects.all().first()
+    return {'terms': terms }

@@ -5,7 +5,7 @@ from world_cup.views import (
 GroupsView, EightsView, FourthsView,
 SemiView, TercerCuartoView,
 FinalsView, ReyparAdminView, SaveMatchView,
-RankingView
+RankingView, TermsView
 )
 
 urlpatterns = [
@@ -17,5 +17,6 @@ urlpatterns = [
     path('fase_final/', FinalsView.as_view(), name='finals_phase'),
     path('reypar_admin/', ReyparAdminView.as_view(), name='reypar_admin'),
     path('guardar_partido/', SaveMatchView.as_view(), name='save_match'),
-    path('ranking/', RankingView.as_view(), name='ranking')
+    path('ranking/', RankingView.as_view(), name='ranking'),
+    path('terminos_y_condiciones_polla/', TermsView.as_view(), name='terms')
 ]

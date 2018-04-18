@@ -10,6 +10,18 @@
       {% endfor %}
   </ul>
   {% endif %}
+  {% if user.profile.groups_filled == False %}
+  Instrucciones:
+  <ul>
+      <li>Ingresa los pronósticos de resultados para continuar en la fase de Octavos.</li>
+      <li>Hasta no digitar todos los partidos y darle guardar no se podrá continuar la siguiente
+      fase.</li>
+      <li>Al guardar cada fase no hay retroceso en sus pronósticos.</li>
+  </ui>
+  {% else %}
+  Estos son tus resultados:
+  {% endif %}
+
 
   {{ user.groups_filled }}
   <form class="" action="/fase_grupos/" method="post">

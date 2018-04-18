@@ -5,6 +5,9 @@ from django.dispatch import receiver
 from world_cup.models import Team, RealMatch, UserMatch, UserTeam
 
 # Create your models here.
+class TermsConditions(models.Model):
+    text = models.TextField()
+
 class Client(models.Model):
     PROFILE_CHOICES = (('10','A'), ('5','B'), ('3','C'))
 
