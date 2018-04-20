@@ -4,24 +4,21 @@
 {% block content %}
   <br>
   {% if messages %}
-  <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-  </ul>
-  {% endif %}
-  {% if user.profile.groups_filled == False %}
-  Instrucciones:
-  <ul>
-      <li>Ingresa los pronósticos de resultados para continuar en la fase de Octavos.</li>
-      <li>Hasta no digitar todos los partidos y darle guardar no se podrá continuar la siguiente
-      fase.</li>
-      <li>Al guardar cada fase no hay retroceso en sus pronósticos.</li>
-  </ui>
-  {% else %}
-  Estos son tus resultados:
+  <div class="alert alert-info">
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+</div>
   {% endif %}
 
+
+  {% if user.profile.groups_filled == False %}
+      {% include 'world_cup/instructions.html' with phase='continuar a la fase de octavos' %}
+  {% else %}
+      {% include 'world_cup/warning.html' %}
+  {% endif %}
 
   {{ user.groups_filled }}
   <form class="" action="/fase_grupos/" method="post">

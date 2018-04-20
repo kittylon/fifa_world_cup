@@ -1,60 +1,38 @@
+{% extends 'world_cup/base.html' %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>{{title|default:"Mundial Reypar"}}</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.min.css">
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="/static/js/match.js"></script>
-  </head>
-  <body>
-      <div class="demo-headline">
-        {% include 'world_cup/navbar.html' %}
-      </div>
-      <div class='container' style="margin-bottom: 4rem;">
-          <h2 class="demo-logo">
-            Polla Mundialista Reypar
-            <small>FIFA 2018⚽</small>
-          </h2>
-          {% if user.is_authenticated %}
-            <h1>{{ user.username }} Tu puntaje es: {{ user.profile.total_points }}</h1>
-            <br />
-          {% endif %}
-        <table class="table">
-          <thead class="thead-dark">
-            <tr>
-              <th>Posición</th>
-              <th>Usuario</th>
-              <th>Empresa</th>
-              <th>Puntaje</th>
-            </tr>
-          </thead>
-          <tbody>
-          {% for object in object_list %}
-          <tr>
-            {% if user.username == object.user.username %}
-              <td><b>{{ forloop.counter }}</b></td>
-              <td><b>{{ object.user.username }}</b></td>
-              <td><b>{{ object.company }}</b></td>
-              <td><b>{{ object.total_points }}</b></td>
-            {% else %}
-              <td>{{ forloop.counter }}</td>
-              <td>{{ object.user.username }}</td>
-              <td>{{ object.company }}</td>
-              <td>{{ object.total_points }}</td>
-            {% endif %}
-            <br>
-          </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-       </div>
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.min.js"
-      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-      crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  </body>
-</html>
+{% block content %}
+  <div class="ranking">
+    {% if user.is_authenticated %}
+      <h1>{{ user.username }} Tu puntaje es: {{ user.profile.total_points }}</h1>
+      <br />
+    {% endif %}
+    <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th>Posición</th>
+        <th>Usuario</th>
+        <th>Empresa</th>
+        <th>Puntaje</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+    <tr>
+      {% if user.username == object.user.username %}
+        <td><b>{{ forloop.counter }}</b></td>
+        <td><b>{{ object.user.username }}</b></td>
+        <td><b>{{ object.company }}</b></td>
+        <td><b>{{ object.total_points }}</b></td>
+      {% else %}
+        <td>{{ forloop.counter }}</td>
+        <td>{{ object.user.username }}</td>
+        <td>{{ object.company }}</td>
+        <td>{{ object.total_points }}</td>
+      {% endif %}
+      <br>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+  </div>
+{% endblock %}

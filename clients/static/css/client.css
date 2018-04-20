@@ -1,0 +1,102 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.base {
+  width: 100%;
+  min-height: 100%;
+  margin-bottom: -100px;
+  background-size: cover !important;
+  display: inline-block;
+  padding-bottom: 120px;
+}
+
+.wrapper {
+  padding: 3rem;
+  max-width: 1120px;
+  margin-top: 2rem;
+  background-color: white;
+}
+
+.footer {
+  padding: 2rem;
+  background: #2c3e50;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: inline-block;
+}
+
+.footer-list {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.footer-list > figure {
+  background: #fffd;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  width: 215px;
+  padding: .5rem 1rem;
+  box-sizing: initial;
+}
+
+.footer-list > figure > img {
+  max-height: 200px;
+  display: block;
+  max-width: 200px;
+}
+.footer-list > figure:hover {
+  background: white;
+}
+
+
+.head-logos {
+  display: flex;
+  justify-content: center;
+}
+
+.head-title {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.head {
+  margin: 0 auto;
+}
+
+.polla-login {
+  text-align: center;
+}
+
+.polla-login__buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.polla-login__links {
+  margin-top: 2rem;
+}
+
+.polla-login__links > a {
+  display: block;
+}

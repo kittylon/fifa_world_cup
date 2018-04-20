@@ -10,14 +10,9 @@
 {% endif %}
 
 {% if user.profile.fourths_filled == False %}
-Instrucciones:
-<ul>
-    <li>Ingresa tus pronósticos de resultados para continuar en la Semifinal.</li>
-    <li>En caso de empate define el marcador en las casillas de los penales.</li>
-    <li>Al guardar cada fase no hay retroceso en sus pronósticos.</li>
-</ui>
+    {% include 'world_cup/instructions.html' with phase='continuar a la fase de semifinal' %}
 {% else %}
-Estos son tus resultados:
+    {% include 'world_cup/warning.html' %}
 {% endif %}
 
 <form class="" action="/fase_cuartos/" method="post">

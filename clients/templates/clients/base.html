@@ -6,22 +6,34 @@
     <title>{{title|default:"Mundial Reypar"}}</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.min.css">
+    <link rel="stylesheet" href="{% static "css/client.css" %}">
 
   </head>
   <body>
-      <div class="demo-headline">
-          <h2 class="demo-logo">
-            <div class="logo"></div>
-            Polla Mundialista Reypar
-            <!-- <img src="https://www.importacionesreypar.com/wp-content/themes/reypar/img/logo.png" alt=""> -->
-            <small>FIFA 2018⚽</small>
-          </h2>
-      </div>
-    {% block content %}
-    {% endblock %}
+    <div class="base" style="background: url('{% static "clients/background.jpg" %}')">
+      <div class="wrapper container-fluid">
+        <div class="head">
+          <div class="head-logos">
+            <figure>
+              <img height="300" src="{% static "clients/reypar.png" %}" alt="My image"/>
+            </figure>
 
+          </div>
+            <h2 class="head-title">
+              Polla Mundialista Reypar
+              <!-- <img src="https://www.importacionesreypar.com/wp-content/themes/reypar/img/logo.png" alt=""> -->
+              <small>FIFA 2018⚽</small>
+            </h2>
+        </div>
+        {% block content %}
+        {% endblock %}
+      </div>
+      </div>
+
+    </div>
+    {% include 'clients/footer.html' %}
     <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
     {{ form.media  }}
-    {% include 'clients/footer.html' %}
+
   </body>
 </html>

@@ -2,9 +2,14 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Reypar FIFA 2018⚽</a>
+      <a class="navbar-brand" href="{% url 'groups_phase' %}">Reypar FIFA 2018⚽</a>
     </div>
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav">
+      <li><a href="{% url 'ranking' %}">Ranking</a></li>
+      <li><a href="{% url 'terms' %}">Terminos y condiciones</a></li>
+    </ul>
+    {% if user.is_authenticated %}
+      <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.get_short_name|title }}<span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -13,5 +18,7 @@
           </ul>
         </li>
       </ul>
+    {% endif %}
+
   </div><!-- /.container-fluid -->
 </nav>

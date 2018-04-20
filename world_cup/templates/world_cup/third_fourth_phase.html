@@ -9,15 +9,10 @@
 </ul>
 {% endif %}
 
-{% if user.profile.trd_fth_filled == False %}
-Instrucciones:
-<ul>
-    <li>Ingresa tus pronósticos de resultados para continuar a la final.</li>
-    <li>En caso de empate define el marcador en las casillas de los penales.</li>
-    <li>Al guardar cada fase no hay retroceso en sus pronósticos.</li>
-</ui>
+{% if user.profile.groups_filled == False %}
+    {% include 'world_cup/instructions.html' %}
 {% else %}
-Estos son tus resultados:
+    {% include 'world_cup/warning.html' %}
 {% endif %}
 
 <form class="" action="/fase_tercer_cuarto/" method="post">
