@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import Client, Profile, TermsConditions
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['nit', 'name', 'prof']
+    list_display = ['nit', 'name', 'legal', 'city', 'address', 'phone',
+                    'prof']
     search_fields = ['nit', 'name', 'prof']
 
 class ProfileAdmin(admin.ModelAdmin):

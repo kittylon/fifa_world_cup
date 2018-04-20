@@ -19,7 +19,7 @@ class ClientAutocomplete(autocomplete.Select2QuerySetView):
 
         if (self.q):
             # qs = qs.filter(name__startswith = self.q)
-            qs = qs.filter(Q(name__startswith = self.q) | Q(nit__startswith= self.q))
+            qs = qs.filter(Q(nit__startswith = self.q))
 
         return qs
 

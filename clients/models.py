@@ -12,14 +12,15 @@ class Client(models.Model):
     PROFILE_CHOICES = (('10','A'), ('5','B'), ('3','C'))
 
     nit = models.CharField(max_length=255, unique=True)
-    name = models.CharField(max_length=255, unique=True)
-    prof = models.CharField(max_length=50, choices=PROFILE_CHOICES, null=False)
+    name = models.CharField(max_length=255, null=True, blank=True, default='')
+    legal = models.CharField(max_length=255, null=True, blank=True, default='')
     city = models.CharField(max_length=255, null=True, blank=True, default='')
     address = models.CharField(max_length=255, null=True, blank=True, default='')
     phone = models.CharField(max_length=255)
+    prof = models.CharField(max_length=50, choices=PROFILE_CHOICES, null=False)
 
     def __str__(self):
-        return self.name
+        return (self.name + ' - ' + self.legal)
 
 class Profile(models.Model):
     ID_CHOICES = (('CC','Cédula'), ('PA','Pasaporte'), ('CE','Cédula de extranjería'))
