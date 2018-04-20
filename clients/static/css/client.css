@@ -10,12 +10,17 @@ html {
   min-height: 100%;
 }
 
+input {
+    color: black;
+}
+
 body {
   margin: 0;
   width: 100%;
   height: 100%;
   position: relative;
   box-sizing: border-box;
+  color: #ecf0f1;
 }
 
 .base {
@@ -31,7 +36,6 @@ body {
   padding: 3rem;
   max-width: 1120px;
   margin-top: 2rem;
-  background-color: white;
 }
 
 .footer {
@@ -78,8 +82,12 @@ body {
 .head-title {
   text-align: center;
   margin-top: 1rem;
+  color: white;
 }
 
+.white {
+  color: white;
+}
 .head {
   margin: 0 auto;
 }
@@ -99,4 +107,27 @@ body {
 
 .polla-login__links > a {
   display: block;
+}
+
+.panel {
+  background: transparent;
+}
+
+.loginbox {
+  display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.loginbox > p, label, .loginbox > h2, .loginbox > a{
+  display: flex;flex-direction: column;
+  color: white;
+}
+
+.helptext {
+  color: white;
+}
+
+.base ul > li {
+  color: white;
 }

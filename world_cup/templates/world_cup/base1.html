@@ -22,11 +22,6 @@
             Polla Mundialista Reypar
             <small>FIFA 2018⚽</small>
           </h2>
-        {% if permiso == None %}
-          Ponte en contacto con el administrador, no han definido las fechas de la actividad
-        {% elif permiso == False %}
-          Las fechas para guardar el pronóstico eran desde {{start_date}} hasta el {{end_date}} 😰
-        {% else%}
         <section>
           {% if user.profile.groups_filled == True %}
           <span>Ir a: </span>
@@ -36,7 +31,6 @@
 
         {% block content %}
         {% endblock %}
-        {% endif %}
       </div>
     <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"

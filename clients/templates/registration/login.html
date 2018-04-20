@@ -2,13 +2,16 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn  btn-primary" >Login</button>
-  </form>
-  <a href="{% url 'password_reset' %}">Olvidé mi usuario o contraseña</a>
-</p>
+  <div class="panel">
+    <div class="panel-body loginbox">
+      <h2>Login</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn  btn-primary" >Login</button>
+      </form>
+      <a href="{% url 'password_reset' %}">Olvidé mi usuario o contraseña</a>
+    </p>
+    </div>
+  </div>
 {% endblock %}
