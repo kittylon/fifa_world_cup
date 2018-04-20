@@ -11,13 +11,15 @@ from dal import autocomplete
 from django.db import IntegrityError
 from django.db.models import Q
 from django.contrib import messages
+from datetime import date, datetime
 
 class ClientAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Client.objects.all()
 
         if (self.q):
-            qs = qs.filter(name__startswith = self.q)
+            # qs = qs.filter(name__startswith = self.q)
+            qs = qs.filter(Q(name__startswith = self.q) | Q(nit__startswith= self.q))
 
         return qs
 
@@ -26,32 +28,44 @@ class RegisterView(TemplateView):
     template_name = 'registration/register_user.html'
 
     @staticmethod
-    def check_unique(email, document_type, document_number, company):
+    def check_unique(email, document_type, document_number, company, birthday):
+        today = date.today()
+        age = int(abs((today - birthday).days / 365.25))
         company2 = Client.objects.get(name=company)
         companies = Profile.objects.filter(company=company).count()
         emails = User.objects.filter(email=email).count()
+        email_pro = Profile.objects.filter(email=email).count()
         documents = Profile.objects.filter(document_type=document_type, document_number=document_number).count()
         message = ''
         error = False
-        print(company2.prof)
         if companies >= int(company2.prof):
             message = 'La empresa en la que trabajas ya ocupó los ' + str(company2.prof) + ' cupos 😧.'
             error = True
-            print(message)
+            print('1')
 
-        if int(emails) > 0 or int(documents) > 0 :
+        elif age < 18:
+            message = 'Debes ser mayor de edad para participar 👶.'
+            error = True
+            print('2')
+
+        elif int(emails) > 0 or int(documents) > 0 :
             if (int(emails) > 0 and int(documents) > 0):
                 message = 'El email y el documento deben ser unicos 😧.'
-            elif int(emails) > 0:
+                error = True
+                print('3')
+            elif int(emails) or int(email_pro) > 0:
                 message = 'El email ya esta en uso 😧.'
+                error = True
+                print('4')
             else:
                 message = 'El documento ya esta en uso 😧.'
-            error = True
+                error = True
+                print('5')
 
-        else:
-            return {
-                    'message': message,
-                    'error': error
+            print('6')
+        return {
+                'message': message,
+                'error': error
                 }
 
 class OptionsView(TemplateView):
@@ -65,13 +79,14 @@ def register_user(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            check = RegisterView.check_unique(form.cleaned_data.get('email'), form.cleaned_data.get('document_type'), form.cleaned_data.get('document_number'), form.cleaned_data.get('company'))
+            check = RegisterView.check_unique(form.cleaned_data.get('email'), form.cleaned_data.get('document_type'), form.cleaned_data.get('document_number'), form.cleaned_data.get('company'), form.cleaned_data.get('birth_date'))
             if check['error'] == False:
                 user = form.save()
                 user.refresh_from_db()  # load the profile instance created by the signal
                 user.first_name = form.cleaned_data.get('name')
                 user.last_name = form.cleaned_data.get('last_name')
                 user.email = form.cleaned_data.get('email')
+                user.profile.email = form.cleaned_data.get('email')
                 user.profile.birth_date = form.cleaned_data.get('birth_date')
                 user.profile.sex = form.cleaned_data.get('sex')
                 user.profile.document_type = form.cleaned_data.get('document_type')
@@ -87,6 +102,7 @@ def register_user(request):
                 user = authenticate(username=user.username, password=raw_password)
                 login(request, user)
                 return redirect('groups_phase')
+                print('all good')
             else:
                 messages.warning(request, check['message'])
     else:

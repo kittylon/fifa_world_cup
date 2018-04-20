@@ -14,6 +14,9 @@ class Client(models.Model):
     nit = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255, unique=True)
     prof = models.CharField(max_length=50, choices=PROFILE_CHOICES, null=False)
+    city = models.CharField(max_length=255, null=True, blank=True, default='')
+    address = models.CharField(max_length=255, null=True, blank=True, default='')
+    phone = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
@@ -22,6 +25,7 @@ class Profile(models.Model):
     ID_CHOICES = (('CC','Cédula'), ('PA','Pasaporte'), ('CE','Cédula de extranjería'))
     SEX_CHOICES = (('M','Masculino'), ('F','Femenino'))
 
+    email = models.EmailField(max_length=254, null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birth_date = models.DateField(null=True, blank=True)
     document_type = models.CharField(max_length=50, choices=ID_CHOICES, null=False, default='CC')

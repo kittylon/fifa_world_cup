@@ -8,6 +8,8 @@ class RealMatchAdmin(admin.ModelAdmin):
                     'penals_team_two','played']
     readonly_fields = ('label', 'date', 'phase', 'group', 'team_one', 'team_two',
                         'winner', 'loser')
+    search_fields = ['label', 'phase']
+
 
 class UserMatchAdmin(admin.ModelAdmin):
     list_display = ['label', 'user', 'date', 'phase', 'group', 'team_one', 'team_two',
@@ -16,6 +18,7 @@ class UserMatchAdmin(admin.ModelAdmin):
 
     readonly_fields = ('label', 'date', 'phase', 'group', 'team_one', 'team_two',
                         'winner', 'loser')
+    search_fields = ['user__username']
 
 class DatePermissionsAdmin(admin.ModelAdmin):
     list_display = ['start_date', 'end_date']
@@ -23,6 +26,7 @@ class DatePermissionsAdmin(admin.ModelAdmin):
 class UserTeamAdmin(admin.ModelAdmin):
     list_display = ['country', 'user']
     readonly_fields = ('country', 'user')
+    search_fields = ['user__username']
 
 # Register your models here.
 admin.site.register(Team)
