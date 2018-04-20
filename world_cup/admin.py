@@ -14,7 +14,7 @@ class RealMatchAdmin(admin.ModelAdmin):
 class UserMatchAdmin(admin.ModelAdmin):
     list_display = ['label', 'user', 'date', 'phase', 'group', 'team_one', 'team_two',
                     'team_one_score', 'team_two_score', 'penals_team_one',
-                    'penals_team_two','gambled']
+                    'penals_team_two','gambled', 'points']
 
     readonly_fields = ('label', 'date', 'phase', 'group', 'team_one', 'team_two',
                         'winner', 'loser')

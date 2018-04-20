@@ -65,8 +65,15 @@ class SaveMatchView(LoginRequiredMixin, TemplateView):
         if dict['team_1'] == dict['team_2']:
             user_match.penals_team_one = dict['penals_1']
             user_match.penals_team_two = dict['penals_2']
-            user_match.winner = None
-            user_match.loser = None
+            if dict['penals_1'] > dict['penals_2']:
+                user_match.winner = user_match.team_one
+                user_match.loser = user_match.team_two
+            elif dict['penals_2'] > dict['penals_1']:
+                user_match.winner = user_match.team_two
+                user_match.loser = user_match.team_one
+            else:
+                user_match.winner = None
+                user_match.loser = None
         elif dict['team_1'] > dict['team_2']:
             user_match.penals_team_one = 0
             user_match.penals_team_two = 0
