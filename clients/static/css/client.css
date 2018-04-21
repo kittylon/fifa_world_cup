@@ -132,3 +132,26 @@ align-items: center;
 .base ul > li {
   color: white;
 }
+
+.errorlist {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-radius: 4px;
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+  color: black !important;
+  width: auto;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.errorlist > li {
+  color: black !important;
+  margin-left: 1rem;
+}

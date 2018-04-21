@@ -10,6 +10,14 @@
     {% endfor %}
 </div>
 {% endif %}
+{% if form.subject.errors %}
+    <div class="alert alert-warning">
+    {% for error in form.subject.errors %}
+        <strong>{{ error|escape }}</strong>
+    {% endfor %}
+  </div>
+{% endif %}
+
 <form class="" action="." method="post">
   {% csrf_token %}
   {{ form.as_p }}

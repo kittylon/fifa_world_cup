@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Profile, TermsConditions
+from .models import Client, Profile
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = ['nit', 'name', 'legal', 'city', 'address', 'phone',
@@ -17,4 +17,3 @@ class ProfileAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(TermsConditions)

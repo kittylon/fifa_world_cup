@@ -70,7 +70,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'world_cup.context_processor.date_now',
-                'world_cup.context_processor.terms',
             ],
         },
     },

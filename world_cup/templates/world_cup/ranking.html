@@ -11,7 +11,6 @@
       <tr>
         <th>Posición</th>
         <th>Usuario</th>
-        <th>Empresa</th>
         <th>Puntaje</th>
       </tr>
     </thead>
@@ -21,12 +20,10 @@
       {% if user.username == object.user.username %}
         <td><b>{{ forloop.counter }}</b></td>
         <td><b>{{ object.user.username }}</b></td>
-        <td><b>{{ object.company }}</b></td>
         <td><b>{{ object.total_points }}</b></td>
       {% else %}
         <td>{{ forloop.counter }}</td>
         <td>{{ object.user.username }}</td>
-        <td>{{ object.company }}</td>
         <td>{{ object.total_points }}</td>
       {% endif %}
       <br>
