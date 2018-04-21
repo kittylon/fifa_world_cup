@@ -53,6 +53,7 @@ class SaveMatchView(LoginRequiredMixin, TemplateView):
             else:
                 goals_favor += match.team_two_score
                 goals_against += match.team_one_score
+            match.save()
         SaveMatchView.save_team_stats(team, points, goals_favor, goals_against)
         return
 

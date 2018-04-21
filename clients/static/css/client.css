@@ -14,6 +14,10 @@ input {
     color: black;
 }
 
+select {
+  color: black;
+}
+
 body {
   margin: 0;
   width: 100%;
@@ -29,7 +33,6 @@ body {
   margin-bottom: -100px;
   background-size: cover !important;
   display: inline-block;
-  padding-bottom: 120px;
 }
 
 .wrapper {
@@ -40,7 +43,6 @@ body {
 
 .footer {
   padding: 2rem;
-  background: #2c3e50;
   bottom: 0;
   left: 0;
   right: 0;
@@ -51,28 +53,27 @@ body {
 .footer-list {
   display: flex;
   flex-wrap: wrap;
-  max-width: 1300px;
+  max-width: 1330px;
   margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.alert-warning {
+   color: black !important;
 }
 
 .footer-list > figure {
-  background: #fffd;
-  margin-right: 1rem;
+  margin-right: 0rem;
   margin-bottom: 1rem;
-  width: 215px;
-  padding: .5rem 1rem;
   box-sizing: initial;
 }
 
 .footer-list > figure > img {
-  max-height: 200px;
+  max-height: 80px;
   display: block;
-  max-width: 200px;
+  max-width: 180px;
 }
-.footer-list > figure:hover {
-  background: white;
-}
-
 
 .head-logos {
   display: flex;

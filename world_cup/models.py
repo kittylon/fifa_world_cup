@@ -214,6 +214,7 @@ class UserMatch(models.Model):
 
     @staticmethod
     def check_phase(phase, user):
+        print(phase)
         if "Groups" in phase:
             UserMatch.cal_groups(phase, user)
         if "Eights" in phase:
@@ -227,26 +228,35 @@ class UserMatch(models.Model):
         elif "Finals" in phase:
             UserMatch.cal_final(phase, user)
         else:
-            print("Label no válido")
+            print("Label no válido" + ' ' + phase)
         return
 
     @staticmethod
     def cal_points(match):
-        user_matches = UserMatch.objects.filter(Q(label=match.label) & ~Q(user=match.user))
+        user_matches = UserMatch.objects.filter(Q(label=match.label, gambled=True) & ~Q(user=match.user))
         for u_match in user_matches:
             if match.team_one.country == u_match.team_one.country and match.team_two.country == u_match.team_two.country:
                 if match.phase == 'Groups':
+                    print('Fucked')
                     if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score:
+                        print('Jodida A')
                         u_match.points = 3
                         u_match.save()
                     elif str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser):
+                        print('Jodida B')
+                        print(match.team_one_score)
+                        print(u_match.team_one_score)
+                        print(match.team_two.country)
+                        print(u_match.team_two.country)
                         u_match.points = 1
                         u_match.save()
                         print('Obtienes un punto')
                     else:
+                        print('Jodida C')
                         u_match.points = 0
                         u_match.save()
                 else:
+                    print('OVER')
                     if match.team_one_score == u_match.team_one_score and match.team_two_score == u_match.team_two_score:
                         if (match.penals_team_one > 0  or match.penals_team_two > 0) and (str(match.winner) == str(u_match.winner) and str(match.loser) == str(u_match.loser)):
                             u_match.points = 4

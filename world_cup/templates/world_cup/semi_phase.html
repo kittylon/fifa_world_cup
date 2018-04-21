@@ -2,24 +2,27 @@
 {% block content %}
 <br>
 {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
+<div class="alert alert-warning">
+      {% for message in messages %}
+      <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+      {% endfor %}
+</div>
 {% endif %}
+
+
+<form class="" action="/fase_semifinal/" method="post">
+{% csrf_token %}
+{% if user.profile.fourths_filled == False %}
+<div class="alert alert-warning">
+Llena la fase de cuartos primero para llenar la fase semifinal😯.
+</div>
+{% else %}
 
 {% if user.profile.groups_filled == False %}
     {% include 'world_cup/instructions.html' %}
 {% else %}
     {% include 'world_cup/warning.html' %}
 {% endif %}
-
-<form class="" action="/fase_semifinal/" method="post">
-{% csrf_token %}
-{% if user.profile.fourths_filled == False %}
-Llena la fase de cuartos primero para llenar la fase semifinal😯
-{% else %}
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -60,6 +63,7 @@ Llena la fase de cuartos primero para llenar la fase semifinal😯
   {% endfor %}
   </tbody>
 </table>
+{% include 'world_cup/admin.html'%}
 {% if user.profile.fourths_filled == False %}
 {% elif user.profile.semi_filled == False %}
 <div class="col-xs-12 text-center">

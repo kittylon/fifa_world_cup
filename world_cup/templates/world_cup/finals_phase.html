@@ -2,29 +2,26 @@
 {% block content %}
 <br>
 {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% if user.profile.final_filled == False %}
-Instrucciones:
-<ul>
-    <li>Ingresa tus pronósticos de resultados para el CAMPEON DE LA COPA.</li>
-    <li>En caso de empate define el marcador en las casillas de los penales.</li>
-    <li>Al guardar cada fase no hay retroceso en sus pronósticos.</li>
-</ui>
-{% else %}
-Estos son tus resultados:
+<div class="alert alert-warning">
+      {% for message in messages %}
+      <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+      {% endfor %}
+</div>
 {% endif %}
 
 <form class="" action="/fase_final/" method="post">
 {% csrf_token %}
 {% if user.profile.trd_fth_filled == False %}
+<div class="alert alert-warning">
 Llena la fase de tercer y cuarto puesto primero para llenar la fase final😯
+</div>
 {% else %}
+
+{% if user.profile.eights_filled == False %}
+    {% include 'world_cup/instructions.html' with phase='el CAMPEÓN DE LA COPA.' %}
+{% else %}
+    {% include 'world_cup/warning.html' %}
+{% endif %}
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -65,6 +62,8 @@ Llena la fase de tercer y cuarto puesto primero para llenar la fase final😯
   {% endfor %}
   </tbody>
 </table>
+{% include 'world_cup/admin.html'%}
+
 {% if user.profile.trd_fth_filled == False %}
 {% elif user.profile.final_filled == False %}
 <div class="col-xs-12 text-center">

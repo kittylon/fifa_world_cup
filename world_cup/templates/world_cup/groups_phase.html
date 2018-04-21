@@ -4,13 +4,11 @@
 {% block content %}
   <br>
   {% if messages %}
-  <div class="alert alert-info">
-    <ul class="messages">
+  <div class="alert alert-warning">
         {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <p>{{ message }}</p>
         {% endfor %}
-    </ul>
-</div>
+  </div>
   {% endif %}
 
 
@@ -64,6 +62,7 @@
   </table>
   </div>
   {% endfor %}
+  {% include 'world_cup/admin.html'%}
   {% if user.profile.groups_filled == False %}
   <div class="col-xs-12 text-center">
     <input type="submit" class='btn btn-lg btn-primary' name="" value="Registrar Resultados">

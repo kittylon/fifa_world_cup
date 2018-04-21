@@ -29,16 +29,23 @@ class RegisterView(TemplateView):
 
     @staticmethod
     def check_unique(email, document_type, document_number, company, birthday):
+        str_comp = str(company)
+        name, legal = str_comp.split('-')
         today = date.today()
         age = int(abs((today - birthday).days / 365.25))
-        company2 = Client.objects.get(name=company)
-        companies = Profile.objects.filter(company=company).count()
+        comp_check = Client.objects.filter(name=name, legal=legal).count()
+        company2 = Client.objects.get(name=name, legal=legal)
+        companies = Profile.objects.filter(company=company2).count()
         emails = User.objects.filter(email=email).count()
         email_pro = Profile.objects.filter(email=email).count()
         documents = Profile.objects.filter(document_type=document_type, document_number=document_number).count()
         message = ''
         error = False
-        if companies >= int(company2.prof):
+        if comp_check >=2:
+            message = 'La empresa en la que trabajas está registrada 2 veces, ponte en contacto con el administrador 😧.'
+            error = True
+            print('1')
+        elif companies >= int(company2.prof):
             message = 'La empresa en la que trabajas ya ocupó los ' + str(company2.prof) + ' cupos 😧.'
             error = True
             print('1')
@@ -102,7 +109,6 @@ def register_user(request):
                 user = authenticate(username=user.username, password=raw_password)
                 login(request, user)
                 return redirect('groups_phase')
-                print('all good')
             else:
                 messages.warning(request, check['message'])
     else:
