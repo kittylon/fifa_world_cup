@@ -5,7 +5,8 @@ from django.conf.urls import include, url
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 from clients.views import (
-RegisterView, home, OptionsView, register_user, ClientAutocomplete
+RegisterView, home, OptionsView, register_user
+# , ClientAutocomplete
 )
 
 
@@ -15,11 +16,11 @@ urlpatterns = [
     path('logout/', auth_views.logout, {'next_page': 'options'}, name='logout'),
     path('home/', home, name='home'),
     path('register/', register_user, name='register_user'),
-    path(
-        'client-autocomplete/',
-        ClientAutocomplete.as_view(),
-        name='client-autocomplete'
-    ),
+    # path(
+    #     'client-autocomplete/',
+    #     ClientAutocomplete.as_view(),
+    #     name='client-autocomplete'
+    # ),
     ##url('', include('django.contrib.auth.urls')),
     path('password_reset/', auth_views.password_reset, { 'template_name': 'registration/reset_form.html'}, name='password_reset'),
     path('password_reset/done/',auth_views.password_reset_done,

@@ -13,15 +13,15 @@ from django.db.models import Q
 from django.contrib import messages
 from datetime import date, datetime
 
-class ClientAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        qs = Client.objects.all()
-
-        if (self.q):
-            # qs = qs.filter(name__startswith = self.q)
-            qs = qs.filter(Q(nit__startswith = self.q))
-
-        return qs
+# class ClientAutocomplete(autocomplete.Select2QuerySetView):
+#     def get_queryset(self):
+#         qs = Client.objects.all()
+#
+#         if (self.q):
+#             # qs = qs.filter(name__startswith = self.q)
+#             qs = qs.filter(Q(nit__startswith = self.q))
+#
+#         return qs
 
 # Views to register a new user
 class RegisterView(TemplateView):
@@ -29,50 +29,48 @@ class RegisterView(TemplateView):
 
     @staticmethod
     def check_unique(email, document_type, document_number, company, birthday):
-        str_comp = str(company)
-        name, legal = str_comp.split('-')
+        print(company)
         today = date.today()
         age = int(abs((today - birthday).days / 365.25))
-        comp_check = Client.objects.filter(name=name, legal=legal).count()
-        company2 = Client.objects.get(name=name, legal=legal)
-        companies = Profile.objects.filter(company=company2).count()
+        users = -1
+        try:
+            comp = Client.objects.get(nit=company)
+            users = Profile.objects.filter(company__nit=company).count()
+        except:
+            comp = 0
         emails = User.objects.filter(email=email).count()
         email_pro = Profile.objects.filter(email=email).count()
         documents = Profile.objects.filter(document_type=document_type, document_number=document_number).count()
         message = ''
         error = False
-        if comp_check >=2:
-            message = 'La empresa en la que trabajas está registrada 2 veces, ponte en contacto con el administrador 😧.'
+
+        if comp == 0:
+            message = 'No existe una empresa registrada en la actividad con ese NIT, verifica por favor.'
             error = True
-            print('1')
-        elif companies >= int(company2.prof):
+
+        elif users >= int(comp.prof):
             message = 'La empresa en la que trabajas ya ocupó los ' + str(company2.prof) + ' cupos 😧.'
             error = True
-            print('1')
 
         elif age < 18:
             message = 'Debes ser mayor de edad para participar 👶.'
             error = True
-            print('2')
 
         elif int(emails) > 0 or int(documents) > 0 :
             if (int(emails) > 0 and int(documents) > 0):
                 message = 'El email y el documento deben ser unicos 😧.'
                 error = True
-                print('3')
             elif int(emails) or int(email_pro) > 0:
                 message = 'El email ya esta en uso 😧.'
                 error = True
-                print('4')
             else:
                 message = 'El documento ya esta en uso 😧.'
                 error = True
-                print('5')
 
-            print('6')
         return {
                 'message': message,
-                'error': error
+                'error': error,
+                'comp': comp
                 }
 
 class OptionsView(TemplateView):
@@ -102,7 +100,7 @@ def register_user(request):
                 user.profile.phone= form.cleaned_data.get('phone')
                 user.profile.mobile= form.cleaned_data.get('mobile')
                 user.profile.address = form.cleaned_data.get('address')
-                user.profile.company= form.cleaned_data.get('company')
+                user.profile.company= check['comp']
                 user.profile.job_title = form.cleaned_data.get('job_title')
                 user.save()
                 raw_password = form.cleaned_data.get('password1')

@@ -13,7 +13,7 @@ class ProfileAdmin(admin.ModelAdmin):
                     'trd_fth_points', 'final_points', 'total_points', 'groups_filled',
                     'eights_filled', 'fourths_filled', 'semi_filled', 'trd_fth_filled',
                     'final_filled']
-    search_fields = ['user__username', 'email','document_number']
+    search_fields = ['user__username', 'email','document_number', 'company__nit']
 # Register your models here.
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Profile, ProfileAdmin)

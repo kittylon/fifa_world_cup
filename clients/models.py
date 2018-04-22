@@ -17,7 +17,7 @@ class Client(models.Model):
     prof = models.CharField(max_length=50, choices=PROFILE_CHOICES, null=False)
 
     def __str__(self):
-        return (self.name + '-' + self.legal)
+        return self.nit
 
 class Profile(models.Model):
     ID_CHOICES = (('CC','Cédula'), ('PA','Pasaporte'), ('CE','Cédula de extranjería'))

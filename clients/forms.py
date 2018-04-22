@@ -31,10 +31,10 @@ class SignUpForm(UserCreationForm):
     phone = forms.IntegerField(label='Teléfono', required=False, max_value=9999999999, min_value=0000000000)
     mobile = forms.IntegerField(label='Celular',  max_value=999999999999, min_value=000000000000)
     address = forms.CharField(label='Dirección')
-    company = forms.ModelChoiceField(label='Empresa',
-        queryset=Client.objects.all(),
-        widget=autocomplete.ModelSelect2(url='client-autocomplete')
-    )
+    company = forms.CharField(label='NIT de la empresa')
+    #     queryset=Client.objects.all(),
+    #     widget=autocomplete.ModelSelect2(url='client-autocomplete')
+    # )
     job_title = forms.CharField(label='Cargo en su empresa')
 
     class Meta:
