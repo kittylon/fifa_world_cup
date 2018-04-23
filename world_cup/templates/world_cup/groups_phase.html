@@ -21,7 +21,7 @@
   {{ user.groups_filled }}
   <form class="" action="/fase_grupos/" method="post">
   {% csrf_token %}
-  {% for key, value in groups %}
+  {% for key, value in sorted(groups.items()) %}
     <h3>Grupo {{ key }} </h3>
   <div class='panel panel-default'>
   <table class="table">
