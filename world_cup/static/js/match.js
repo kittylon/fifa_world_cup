@@ -56,3 +56,14 @@ function check_inputs(team_1, team_2, penals_1, penals_2, label){
     return true
   }
 }
+
+document.querySelector("input[type='number']").addEventListener("keypress", function (evt) {
+    if ((evt.which >= 48 && evt.which <= 57) || evt.which == 48 || evt.which == 8)
+    {
+        console.log('hola');
+    }
+    else
+    {
+      evt.preventDefault();
+    }
+});

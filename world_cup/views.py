@@ -426,7 +426,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         groups = {}
-        object_list = UserMatch.objects.filter(user=request.user, phase='Groups')
+        object_list = UserMatch.objects.filter(user=request.user, phase='Groups').order_by('group')
 
         for group in GroupsView.groups:
             x = filter(lambda match: match.group == group, object_list)
@@ -601,7 +601,8 @@ class GroupsView(LoginRequiredMixin, TemplateView):
         user = request.user
         ok = GroupsView.score_matches(request, user, dict_gamble)
         if ok == 0:
-            GroupsView.check_winners(request, user)
+            GroupsView.sort_groups(user)
+            # GroupsView.check_winners(request, user)
         return redirect('groups_phase')
 
 class ReyparAdminView(LoginRequiredMixin, TemplateView):

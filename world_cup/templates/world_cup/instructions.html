@@ -1,6 +1,8 @@
 <div class="alert alert-warning">
 Instrucciones:
     <p>Ingresa los pronósticos de resultados para {{phase}}</p>
-    <p>En caso de empate define el marcador en las casillas de los penales.</p>
+    {% if phase!='continuar a la fase de octavos' %}
+      <p>En caso de empate define el marcador en las casillas de los penales.</p>
+    {% endif %}
     <p>Al guardar cada fase no hay retroceso en sus pronósticos.</p>
 </div>
