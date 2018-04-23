@@ -433,7 +433,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
             # import pdb; pdb.set_trace()
             filter_list = list(filter(lambda match: match.group == group, object_list))
             groups[group] = filter_list
-        return render(request, self.template_name, {'groups': groups, 'object_list': object_list} )
+        return render(request, self.template_name, {'groups': sorted(groups.items()), 'object_list': object_list} )
 
 
     @staticmethod

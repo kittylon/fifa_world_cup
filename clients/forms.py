@@ -6,9 +6,11 @@ from dal import autocomplete
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+#Choices for the registration form (sex and id type)
 ID_CHOICES = (('CC','Cédula'), ('PA','Pasaporte'), ('CE','Cédula de extranjería'))
 SEX_CHOICES = (('M','Masculino'), ('F','Femenino'))
 
+#Verifies if the value if correct
 def validate_even(value):
     try:
         int(SignUpForm.value)
@@ -19,6 +21,7 @@ def validate_even(value):
             params={'value': value},
         )
 
+#Form for the new user
 class SignUpForm(UserCreationForm):
     name = forms.CharField(label='Nombres')
     last_name = forms.CharField(label='Apellidos')
@@ -37,6 +40,7 @@ class SignUpForm(UserCreationForm):
     # )
     job_title = forms.CharField(label='Cargo en su empresa')
 
+#metadata for the form
     class Meta:
         model = User
         fields = ('name', 'last_name', 'email', 'birth_date',
