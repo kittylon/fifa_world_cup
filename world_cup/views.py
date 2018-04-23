@@ -436,7 +436,7 @@ class GroupsView(LoginRequiredMixin, TemplateView):
             groups[group] = filter_list
             new_dict = collections.OrderedDict((k, v) for k, v in sorted(groups.items(), key=lambda x: x[0]))
             print(new_dict)
-        return render(request, self.template_name, {'groups': new_dict, 'object_list': object_list} )
+        return render(request, self.template_name, {'groups': sorted(groups.items()), 'object_list': object_list} )
 
 
     @staticmethod
