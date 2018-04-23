@@ -10,6 +10,7 @@ from django.contrib import messages
 import json
 from django.db.models import Q
 from clients.models import Profile
+import collections
 
 class TermsView(TemplateView):
     template_name = 'world_cup/terms.html'
@@ -433,7 +434,9 @@ class GroupsView(LoginRequiredMixin, TemplateView):
             # import pdb; pdb.set_trace()
             filter_list = list(filter(lambda match: match.group == group, object_list))
             groups[group] = filter_list
-        return render(request, self.template_name, {'groups': sorted(groups.items()), 'object_list': object_list} )
+            new_dict = collections.OrderedDict((k, v) for k, v in sorted(groups.items(), key=lambda x: x[0]))
+            print(new_dict)
+        return render(request, self.template_name, {'groups': new_dict, 'object_list': object_list} )
 
 
     @staticmethod
